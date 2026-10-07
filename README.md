@@ -182,8 +182,6 @@ The system provides reports for:
 └──────────────────────────────┘
 ```
 
-````
-
 ---
 
 ## 6. Project Structure
@@ -822,4 +820,3 @@ Restaurant Management System
 
 B.Tech – Computer Science Engineering
 Specialization: Artificial Intelligence and Machine Learning
-````
