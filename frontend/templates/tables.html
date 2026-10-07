@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Tables - Restaurant DBMS</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <h2>Restaurant DBMS</h2>
+
+            <p>Management System</p>
+
+        </div>
+
+
+        <nav class="nav-links">
+
+            <a href="/" class="nav-link">
+                Dashboard
+            </a>
+
+            <a
+                href="/tables"
+                class="nav-link active"
+            >
+                Tables
+            </a>
+
+            <a href="/reservations" class="nav-link">
+                Reservations
+            </a>
+
+            <a href="/orders" class="nav-link">
+                Orders
+            </a>
+
+            <a href="/menu" class="nav-link">
+                Menu
+            </a>
+
+            <a href="/billing" class="nav-link">
+                Billing & Payments
+            </a>
+
+            <a href="/reports" class="nav-link">
+                Reports
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- PAGE HEADER -->
+
+        <section class="top-header">
+
+            <div>
+
+                <h1>Restaurant Tables</h1>
+
+                <p>
+                    Manage table availability and capacity
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             TABLE SECTION
+             ===================================================== -->
+
+        <section class="content-card tables-page-card">
+
+
+            <div class="tables-section-header">
+
+                <div>
+
+                    <h2>
+                        Table Availability
+                    </h2>
+
+                    <p>
+                        Current status and seating capacity
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="refresh-button"
+                    onclick="loadTables()"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+
+
+            <!-- TABLE CARDS -->
+
+            <div
+                id="tables-container"
+                class="restaurant-tables-grid"
+            >
+
+                <div class="table-loading">
+                    Loading tables...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* ============================================================
+   NORMALIZE STATUS
+   ============================================================ */
+
+function normalizeStatus(status) {
+
+    return String(status || "AVAILABLE")
+        .trim()
+        .toUpperCase();
+
+}
+
+
+/* ============================================================
+   STATUS CLASS
+   ============================================================ */
+
+function getStatusClass(status) {
+
+    const normalized =
+        normalizeStatus(status);
+
+    if (normalized === "AVAILABLE") {
+        return "table-status-available";
+    }
+
+    if (normalized === "OCCUPIED") {
+        return "table-status-occupied";
+    }
+
+    if (normalized === "RESERVED") {
+        return "table-status-reserved";
+    }
+
+    if (normalized === "MAINTENANCE") {
+        return "table-status-maintenance";
+    }
+
+    return "table-status-default";
+
+}
+
+
+/* ============================================================
+   LOAD TABLES
+   ============================================================ */
+
+async function loadTables() {
+
+    const container =
+        document.getElementById(
+            "tables-container"
+        );
+
+
+    container.innerHTML = `
+        <div class="table-loading">
+            Loading tables...
+        </div>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/tables",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            data.status !== "success"
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load tables"
+            );
+
+        }
+
+
+        const tables =
+            data.tables || [];
+
+
+        if (!tables.length) {
+
+            container.innerHTML = `
+                <div class="table-empty">
+                    No restaurant tables found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            tables.map(table => {
+
+                const status =
+                    normalizeStatus(
+                        table.table_status
+                    );
+
+
+                const statusClass =
+                    getStatusClass(status);
+
+
+                const capacity =
+                    Number(
+                        table.capacity || 0
+                    );
+
+
+                const guestText =
+                    capacity === 1
+                        ? "guest"
+                        : "guests";
+
+
+                return `
+
+                    <article class="restaurant-table-card">
+
+
+                        <!-- CARD TOP -->
+
+                        <div class="restaurant-table-card-top">
+
+
+                            <div class="restaurant-table-number">
+
+                                ${escapeHTML(
+                                    table.table_number
+                                )}
+
+                            </div>
+
+
+                            <span
+                                class="
+                                    table-status-badge
+                                    ${statusClass}
+                                "
+                            >
+
+                                ${escapeHTML(status)}
+
+                            </span>
+
+
+                        </div>
+
+
+
+                        <!-- TABLE VISUAL -->
+
+                        <div class="restaurant-table-visual">
+
+                            <div class="table-icon">
+
+                                <span></span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- DETAILS -->
+
+                        <div class="restaurant-table-details">
+
+
+                            <div class="table-detail-row">
+
+                                <div class="table-detail-label">
+
+                                    <span
+                                        class="detail-icon"
+                                    >
+                                        AREA
+                                    </span>
+
+                                    <span>
+                                        Area
+                                    </span>
+
+                                </div>
+
+
+                                <strong>
+
+                                    ${escapeHTML(
+                                        table.area_name
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="table-detail-row">
+
+                                <div class="table-detail-label">
+
+                                    <span
+                                        class="detail-icon"
+                                    >
+                                        CAP
+                                    </span>
+
+                                    <span>
+                                        Capacity
+                                    </span>
+
+                                </div>
+
+
+                                <strong>
+
+                                    ${capacity}
+                                    ${guestText}
+
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </article>
+
+                `;
+
+            }).join("");
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Tables error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="table-load-error">
+
+                <strong>
+                    Unable to load tables
+                </strong>
+
+                <span>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </span>
+
+                <button
+                    type="button"
+                    onclick="loadTables()"
+                    class="retry-button"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   INITIAL LOAD
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadTables();
+
+    }
+);
+
+</script>
+
+
+</body>
+</html>

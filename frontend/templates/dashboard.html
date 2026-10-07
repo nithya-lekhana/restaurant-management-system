@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Restaurant Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+    {% include 'navbar.html' %}
+
+
+    <main class="main-content">
+
+        <header class="top-header">
+
+            <div>
+                <h1>Dashboard</h1>
+
+                <p>
+                    Restaurant Management System
+                </p>
+            </div>
+
+        </header>
+
+
+        <section class="dashboard-grid">
+
+            <div class="stat-card">
+
+                <h3>Tables</h3>
+
+                <div id="table-count">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Reservations</h3>
+
+                <div id="reservation-count">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Orders</h3>
+
+                <div id="order-count">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Menu Items</h3>
+
+                <div id="menu-count">
+                    Loading...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="welcome-card">
+
+            <h2>Welcome to Restaurant Management System</h2>
+
+            <p>
+                Manage tables, reservations, orders,
+                menu items, billing and reports from
+                the navigation menu.
+            </p>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script>
+
+fetch("/api/dashboard")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.status === "success") {
+
+            document.getElementById("table-count")
+                .textContent = data.tables;
+
+            document.getElementById("reservation-count")
+                .textContent = data.reservations;
+
+            document.getElementById("order-count")
+                .textContent = data.orders;
+
+            document.getElementById("menu-count")
+                .textContent = data.menu_items;
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Billing & Payments - Restaurant DBMS</title>
+
+    <style>
+      /* =====================================================
+           RESET
+        ===================================================== */
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+
+        background: #f5f6fa;
+
+        color: #111827;
+
+        min-height: 100vh;
+      }
+
+      input,
+      select,
+      button {
+        font-family: inherit;
+      }
+
+      /* =====================================================
+           APP LAYOUT
+        ===================================================== */
+
+      .app-layout {
+        display: flex;
+
+        min-height: 100vh;
+      }
+
+      /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+      .sidebar {
+        position: fixed;
+
+        top: 0;
+        left: 0;
+        bottom: 0;
+
+        width: 278px;
+
+        padding: 32px 18px;
+
+        background: #111522;
+
+        color: white;
+
+        z-index: 1000;
+      }
+
+      .brand {
+        padding: 0 14px 26px;
+
+        margin-bottom: 24px;
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .brand h2 {
+        color: white;
+
+        font-size: 23px;
+
+        line-height: 1.25;
+      }
+
+      .brand p {
+        margin-top: 6px;
+
+        color: #94a3b8;
+
+        font-size: 13px;
+      }
+
+      .sidebar-divider {
+        display: none;
+      }
+
+      /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+      .navigation {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 5px;
+      }
+
+      .navigation a {
+        display: flex;
+
+        align-items: center;
+
+        min-height: 50px;
+
+        padding: 0 15px;
+
+        border-radius: 8px;
+
+        color: #d7dbe5;
+
+        text-decoration: none;
+
+        font-size: 15px;
+
+        font-weight: 500;
+
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .navigation a:hover {
+        background: rgba(255, 255, 255, 0.07);
+
+        color: white;
+      }
+
+      .navigation a.active {
+        background: #5846df;
+
+        color: white;
+
+        font-weight: 700;
+      }
+
+      /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+      .main-content {
+        width: calc(100% - 278px);
+
+        margin-left: 278px;
+
+        padding: 32px 38px 50px;
+
+        min-height: 100vh;
+      }
+
+      /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+      .main-content > section,
+      .main-content > div {
+        width: 100%;
+      }
+
+      /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+      .page-header {
+        width: 100%;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 13px;
+
+        padding: 28px 30px;
+
+        margin-bottom: 22px;
+
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+
+        text-align: left;
+      }
+
+      .page-header h1 {
+        color: #171b2b;
+
+        font-size: 32px;
+
+        line-height: 1.2;
+      }
+
+      .page-header p {
+        margin-top: 8px;
+
+        color: #687386;
+
+        font-size: 15px;
+      }
+
+      /* =====================================================
+           SUMMARY CARDS
+        ===================================================== */
+
+      .stats-grid {
+        display: grid;
+
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 20px;
+
+        margin-bottom: 22px;
+      }
+
+      .stat-card {
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 12px;
+
+        padding: 23px 25px;
+
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+      }
+
+      .stat-card h3 {
+        color: #374151;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        margin-bottom: 10px;
+      }
+
+      .stat-number {
+        color: #5846df;
+
+        font-size: 31px;
+
+        font-weight: 700;
+
+        line-height: 1.1;
+      }
+
+      /* =====================================================
+           CONTENT CARD
+        ===================================================== */
+
+      .content-card {
+        width: 100%;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 13px;
+
+        padding: 28px 30px;
+
+        margin-bottom: 22px;
+
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+      }
+
+      /* =====================================================
+           SECTION HEADING
+        ===================================================== */
+
+      .section-heading {
+        margin-bottom: 22px;
+      }
+
+      .section-heading h2 {
+        color: #171b2b;
+
+        font-size: 24px;
+
+        line-height: 1.2;
+      }
+
+      .section-heading p {
+        margin-top: 7px;
+
+        color: #687386;
+
+        font-size: 14px;
+      }
+
+      /* =====================================================
+           FORM
+        ===================================================== */
+
+      .form-grid {
+        display: grid;
+
+        grid-template-columns:
+          minmax(0, 490px)
+          minmax(0, 490px);
+
+        gap: 22px;
+
+        justify-content: start;
+
+        width: 100%;
+
+        max-width: 1020px;
+      }
+
+      .form-group {
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        width: 100%;
+      }
+
+      .form-group label {
+        margin-bottom: 9px;
+
+        color: #374151;
+
+        font-size: 14px;
+
+        font-weight: 700;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+
+        height: 50px;
+
+        padding: 0 14px;
+
+        border: 1px solid #d5d9e1;
+
+        border-radius: 8px;
+
+        background: white;
+
+        color: #111827;
+
+        font-size: 14px;
+
+        outline: none;
+
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        border-color: #5846df;
+
+        box-shadow: 0 0 0 3px rgba(88, 70, 223, 0.1);
+      }
+
+      .form-group input::placeholder {
+        color: #9aa1ae;
+      }
+
+      /* =====================================================
+           FULL WIDTH FORM AREA
+           IMPORTANT:
+           Button stays on LEFT instead of stretching.
+        ===================================================== */
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
+
+        align-items: flex-start;
+
+        width: 100%;
+      }
+
+      /* =====================================================
+           BUTTON
+        ===================================================== */
+
+      .primary-button {
+        width: auto;
+
+        min-width: 185px;
+
+        height: 46px;
+
+        padding: 0 28px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #5846df;
+
+        color: white;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .primary-button:hover {
+        background: #4938c7;
+
+        transform: translateY(-1px);
+
+        box-shadow: 0 5px 14px rgba(88, 70, 223, 0.22);
+      }
+
+      .primary-button:active {
+        transform: translateY(0);
+      }
+
+      /* =====================================================
+           MESSAGES
+        ===================================================== */
+
+      .message {
+        margin-top: 18px;
+
+        padding: 12px 15px;
+
+        border-radius: 8px;
+
+        font-size: 14px;
+      }
+
+      .message.success {
+        background: #dcfce7;
+
+        color: #166534;
+
+        border: 1px solid #bbf7d0;
+      }
+
+      .message.error {
+        background: #fee2e2;
+
+        color: #991b1b;
+
+        border: 1px solid #fecaca;
+      }
+
+      /* =====================================================
+           TABLE WRAPPER
+        ===================================================== */
+
+      .table-wrapper {
+        width: 100%;
+
+        overflow-x: auto;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 8px;
+      }
+
+      /* =====================================================
+           TABLE
+        ===================================================== */
+
+      table {
+        width: 100%;
+
+        min-width: 950px;
+
+        border-collapse: collapse;
+
+        background: white;
+      }
+
+      thead {
+        background: #f8fafc;
+      }
+
+      th {
+        padding: 14px 12px;
+
+        border-bottom: 1px solid #e5e7eb;
+
+        color: #374151;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        text-align: left;
+
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 14px 12px;
+
+        border-bottom: 1px solid #e5e7eb;
+
+        color: #374151;
+
+        font-size: 13px;
+
+        white-space: nowrap;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr:hover {
+        background: #fafbff;
+      }
+
+      /* =====================================================
+           STATUS BADGES
+        ===================================================== */
+
+      .status-badge {
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 6px 10px;
+
+        border-radius: 20px;
+
+        font-size: 10px;
+
+        font-weight: 700;
+      }
+
+      .status-open {
+        background: #fef3c7;
+
+        color: #92400e;
+      }
+
+      .status-closed {
+        background: #dcfce7;
+
+        color: #166534;
+      }
+
+      .status-success {
+        background: #dcfce7;
+
+        color: #166534;
+      }
+
+      .status-failed {
+        background: #fee2e2;
+
+        color: #991b1b;
+      }
+
+      /* =====================================================
+           LOADING / EMPTY
+        ===================================================== */
+
+      .loading,
+      .empty-state {
+        padding: 30px;
+
+        text-align: center;
+
+        color: #6b7280;
+      }
+
+      .error-text {
+        padding: 25px;
+
+        color: #b91c1c;
+
+        text-align: center;
+      }
+
+      /* =====================================================
+           RESPONSIVE - 1100
+        ===================================================== */
+
+      @media (max-width: 1100px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      /* =====================================================
+           RESPONSIVE - 900
+        ===================================================== */
+
+      @media (max-width: 900px) {
+        .sidebar {
+          width: 220px;
+        }
+
+        .main-content {
+          width: calc(100% - 220px);
+
+          margin-left: 220px;
+
+          padding: 25px 22px 40px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+          grid-column: auto;
+        }
+      }
+
+      /* =====================================================
+           RESPONSIVE - 650
+        ===================================================== */
+
+      @media (max-width: 650px) {
+        .app-layout {
+          display: block;
+        }
+
+        .sidebar {
+          position: relative;
+
+          width: 100%;
+
+          height: auto;
+
+          padding: 20px 14px;
+        }
+
+        .navigation {
+          display: grid;
+
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .navigation a {
+          min-height: 44px;
+        }
+
+        .main-content {
+          width: 100%;
+
+          margin-left: 0;
+
+          padding: 20px 14px 35px;
+        }
+
+        .page-header {
+          padding: 24px 20px;
+        }
+
+        .page-header h1 {
+          font-size: 27px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .content-card {
+          padding: 22px 18px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+
+          max-width: 100%;
+        }
+
+        .primary-button {
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+      <aside class="sidebar">
+        <div class="brand">
+          <h2>Restaurant DBMS</h2>
+
+          <p>Management System</p>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="navigation">
+          <a href="/"> Dashboard </a>
+
+          <a href="/tables"> Tables </a>
+
+          <a href="/reservations"> Reservations </a>
+
+          <a href="/orders"> Orders </a>
+
+          <a href="/menu"> Menu </a>
+
+          <a href="/billing" class="active"> Billing & Payments </a>
+
+          <a href="/reports"> Reports </a>
+        </nav>
+      </aside>
+
+      <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+      <main class="main-content">
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <section class="page-header">
+          <h1>Billing & Payments</h1>
+
+          <p>Manage restaurant bills, discounts and payments</p>
+        </section>
+
+        <!-- =================================================
+             BILLING SUMMARY
+        ================================================== -->
+
+        <section class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Bills</h3>
+
+            <div class="stat-number" id="totalBills">0</div>
+          </div>
+
+          <div class="stat-card">
+            <h3>Open Bills</h3>
+
+            <div class="stat-number" id="openBills">0</div>
+          </div>
+
+          <div class="stat-card">
+            <h3>Closed Bills</h3>
+
+            <div class="stat-number" id="closedBills">0</div>
+          </div>
+
+          <div class="stat-card">
+            <h3>Total Revenue</h3>
+
+            <div class="stat-number" id="totalRevenue">₹0.00</div>
+          </div>
+        </section>
+
+        <!-- =================================================
+             CREATE BILL
+        ================================================== -->
+
+        <section class="content-card">
+          <div class="section-heading">
+            <h2>Create Bill</h2>
+
+            <p>Generate a bill for an unbilled order</p>
+          </div>
+
+          <form id="createBillForm" class="form-grid">
+            <div class="form-group">
+              <label for="billOrderId"> Order ID </label>
+
+              <input
+                type="number"
+                id="billOrderId"
+                min="1"
+                placeholder="Enter order ID"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="billDiscount"> Discount </label>
+
+              <select id="billDiscount">
+                <option value="">No Discount</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="primary-button">Create Bill</button>
+            </div>
+          </form>
+
+          <div id="billMessage" class="message" style="display: none"></div>
+        </section>
+
+        <!-- =================================================
+             ALL BILLS
+        ================================================== -->
+
+        <section class="content-card">
+          <div class="section-heading">
+            <h2>All Bills</h2>
+
+            <p>Current restaurant billing records</p>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Bill ID</th>
+
+                  <th>Order</th>
+
+                  <th>Customer</th>
+
+                  <th>Subtotal</th>
+
+                  <th>Discount</th>
+
+                  <th>Tax</th>
+
+                  <th>Total</th>
+
+                  <th>Paid</th>
+
+                  <th>Balance</th>
+
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="billsTableBody">
+                <tr>
+                  <td colspan="10" class="loading">Loading bills...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================================================
+             MAKE PAYMENT
+        ================================================== -->
+
+        <section class="content-card">
+          <div class="section-heading">
+            <h2>Make Payment</h2>
+
+            <p>Record payment against an open bill</p>
+          </div>
+
+          <form id="paymentForm" class="form-grid">
+            <div class="form-group">
+              <label for="paymentBillId"> Bill ID </label>
+
+              <input
+                type="number"
+                id="paymentBillId"
+                min="1"
+                placeholder="Enter bill ID"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="paymentAmount"> Amount </label>
+
+              <input
+                type="number"
+                id="paymentAmount"
+                min="0.01"
+                step="0.01"
+                placeholder="Enter amount"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="paymentMethod"> Payment Method </label>
+
+              <select id="paymentMethod" required>
+                <option value="">Select method</option>
+
+                <option value="CASH">Cash</option>
+
+                <option value="CARD">Card</option>
+
+                <option value="UPI">UPI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="transactionReference"> Transaction Reference </label>
+
+              <input
+                type="text"
+                id="transactionReference"
+                placeholder="Optional for cash"
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="primary-button">
+                Record Payment
+              </button>
+            </div>
+          </form>
+
+          <div id="paymentMessage" class="message" style="display: none"></div>
+        </section>
+
+        <!-- =================================================
+             PAYMENT HISTORY
+        ================================================== -->
+
+        <section class="content-card">
+          <div class="section-heading">
+            <h2>Payment History</h2>
+
+            <p>Recorded restaurant payments</p>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Payment ID</th>
+
+                  <th>Bill ID</th>
+
+                  <th>Customer</th>
+
+                  <th>Method</th>
+
+                  <th>Amount</th>
+
+                  <th>Status</th>
+
+                  <th>Reference</th>
+
+                  <th>Paid At</th>
+                </tr>
+              </thead>
+
+              <tbody id="paymentsTableBody">
+                <tr>
+                  <td colspan="8" class="loading">Loading payments...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* ============================================================
+   INITIAL LOAD
+============================================================ */
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadBillingSummary();
+
+        loadBills();
+
+        loadPayments();
+
+        loadDiscounts();
+      });
+
+      /* ============================================================
+   FORMAT CURRENCY
+============================================================ */
+
+      function formatCurrency(value) {
+        return "₹" + Number(value || 0).toFixed(2);
+      }
+
+      /* ============================================================
+   SHOW MESSAGE
+============================================================ */
+
+      function showMessage(elementId, message, type) {
+        const element = document.getElementById(elementId);
+
+        element.style.display = "block";
+
+        element.textContent = message;
+
+        element.className = "message " + type;
+      }
+
+      /* ============================================================
+   LOAD BILLING SUMMARY
+============================================================ */
+
+      async function loadBillingSummary() {
+        try {
+          const response = await fetch("/api/billing-summary", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to load billing summary");
+          }
+
+          document.getElementById("totalBills").textContent = data.total_bills;
+
+          document.getElementById("openBills").textContent = data.open_bills;
+
+          document.getElementById("closedBills").textContent =
+            data.closed_bills;
+
+          document.getElementById("totalRevenue").textContent = formatCurrency(
+            data.revenue,
+          );
+        } catch (error) {
+          console.error("Billing summary error:", error);
+        }
+      }
+
+      /* ============================================================
+   LOAD BILLS
+============================================================ */
+
+      async function loadBills() {
+        const tbody = document.getElementById("billsTableBody");
+
+        try {
+          const response = await fetch("/api/bills", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to load bills");
+          }
+
+          tbody.innerHTML = "";
+
+          if (!data.bills || data.bills.length === 0) {
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="10"
+                        class="empty-state"
+                    >
+                        No bills found.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+          }
+
+          data.bills.forEach(function (bill) {
+            const row = document.createElement("tr");
+
+            let statusClass = "status-closed";
+
+            if (bill.bill_status === "OPEN") {
+              statusClass = "status-open";
+            }
+
+            row.innerHTML = `
+
+                    <td>
+                        #${bill.bill_id}
+                    </td>
+
+                    <td>
+                        #${bill.order_id}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(bill.customer_name)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(bill.subtotal)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(bill.discount_amount)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(bill.tax_amount)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${formatCurrency(bill.total_amount)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${formatCurrency(bill.paid_amount)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(bill.balance_amount)}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="
+                                status-badge
+                                ${statusClass}
+                            "
+                        >
+                            ${bill.bill_status}
+                        </span>
+
+                    </td>
+
+                `;
+
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Bills error:", error);
+
+          tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="10"
+                    class="error-text"
+                >
+                    Failed to load bills.
+                    <br>
+                    ${escapeHtml(error.message)}
+                </td>
+
+            </tr>
+
+        `;
+        }
+      }
+
+      /* ============================================================
+   LOAD DISCOUNTS
+============================================================ */
+
+      async function loadDiscounts() {
+        const select = document.getElementById("billDiscount");
+
+        try {
+          const response = await fetch("/api/discounts", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to load discounts");
+          }
+
+          data.discounts.forEach(function (discount) {
+            const active =
+              discount.is_active === true ||
+              discount.is_active === 1 ||
+              discount.is_active === "1" ||
+              (typeof discount.is_active === "string" &&
+                discount.is_active.toLowerCase() === "true");
+
+            if (!active) {
+              return;
+            }
+
+            const option = document.createElement("option");
+
+            option.value = discount.discount_id;
+
+            let label = discount.discount_name;
+
+            if (discount.discount_type === "PERCENTAGE") {
+              label += " (" + discount.discount_value + "%)";
+            } else {
+              label += " (₹" + discount.discount_value + ")";
+            }
+
+            option.textContent = label;
+
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Discount loading error:", error);
+        }
+      }
+
+      /* ============================================================
+   CREATE BILL
+============================================================ */
+
+      document
+        .getElementById("createBillForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const orderId = document.getElementById("billOrderId").value;
+
+          const discountId = document.getElementById("billDiscount").value;
+
+          const requestBody = {
+            order_id: Number(orderId),
+          };
+
+          if (discountId) {
+            requestBody.discount_id = Number(discountId);
+          }
+
+          try {
+            const response = await fetch("/api/bills", {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+              },
+
+              body: JSON.stringify(requestBody),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.status !== "success") {
+              throw new Error(data.message || "Unable to create bill");
+            }
+
+            showMessage(
+              "billMessage",
+
+              `Bill #${data.bill_id} created successfully. Total: ${formatCurrency(data.total_amount)}`,
+
+              "success",
+            );
+
+            document.getElementById("createBillForm").reset();
+
+            loadBills();
+
+            loadBillingSummary();
+          } catch (error) {
+            showMessage(
+              "billMessage",
+
+              error.message,
+
+              "error",
+            );
+          }
+        });
+
+      /* ============================================================
+   MAKE PAYMENT
+============================================================ */
+
+      document
+        .getElementById("paymentForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const billId = document.getElementById("paymentBillId").value;
+
+          const amount = document.getElementById("paymentAmount").value;
+
+          const paymentMethod = document.getElementById("paymentMethod").value;
+
+          const transactionReference = document
+            .getElementById("transactionReference")
+            .value.trim();
+
+          const requestBody = {
+            bill_id: Number(billId),
+
+            amount: Number(amount),
+
+            payment_method: paymentMethod,
+          };
+
+          if (transactionReference) {
+            requestBody.transaction_reference = transactionReference;
+          }
+
+          try {
+            const response = await fetch("/api/payments", {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+              },
+
+              body: JSON.stringify(requestBody),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.status !== "success") {
+              throw new Error(data.message || "Unable to record payment");
+            }
+
+            showMessage(
+              "paymentMessage",
+
+              `Payment recorded successfully. Remaining balance: ${formatCurrency(data.remaining_balance)}`,
+
+              "success",
+            );
+
+            document.getElementById("paymentForm").reset();
+
+            loadBills();
+
+            loadPayments();
+
+            loadBillingSummary();
+          } catch (error) {
+            showMessage(
+              "paymentMessage",
+
+              error.message,
+
+              "error",
+            );
+          }
+        });
+
+      /* ============================================================
+   LOAD PAYMENTS
+============================================================ */
+
+      async function loadPayments() {
+        const tbody = document.getElementById("paymentsTableBody");
+
+        try {
+          const response = await fetch("/api/payments", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to load payments");
+          }
+
+          tbody.innerHTML = "";
+
+          if (!data.payments || data.payments.length === 0) {
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-state"
+                    >
+                        No payments found.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+          }
+
+          data.payments.forEach(function (payment) {
+            const row = document.createElement("tr");
+
+            let statusClass = "status-success";
+
+            if (payment.payment_status !== "SUCCESS") {
+              statusClass = "status-failed";
+            }
+
+            row.innerHTML = `
+
+                    <td>
+                        #${payment.payment_id}
+                    </td>
+
+                    <td>
+                        #${payment.bill_id}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(payment.customer_name)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(payment.payment_method)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${formatCurrency(payment.amount)}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="
+                                status-badge
+                                ${statusClass}
+                            "
+                        >
+                            ${escapeHtml(payment.payment_status)}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${
+                          payment.transaction_reference
+                            ? escapeHtml(payment.transaction_reference)
+                            : "-"
+                        }
+                    </td>
+
+                    <td>
+                        ${formatDateTime(payment.paid_at)}
+                    </td>
+
+                `;
+
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Payments error:", error);
+
+          tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="error-text"
+                >
+                    Failed to load payments.
+                    <br>
+                    ${escapeHtml(error.message)}
+                </td>
+
+            </tr>
+
+        `;
+        }
+      }
+
+      /* ============================================================
+   FORMAT DATE / TIME
+============================================================ */
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "-";
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+          return escapeHtml(value);
+        }
+
+        return date.toLocaleString("en-IN", {
+          day: "2-digit",
+
+          month: "short",
+
+          year: "numeric",
+
+          hour: "2-digit",
+
+          minute: "2-digit",
+        });
+      }
+
+      /* ============================================================
+   HTML ESCAPE
+============================================================ */
+
+      function escapeHtml(value) {
+        if (value === null || value === undefined) {
+          return "";
+        }
+
+        return String(value)
+          .replace(/&/g, "&amp;")
+
+          .replace(/</g, "&lt;")
+
+          .replace(/>/g, "&gt;")
+
+          .replace(/"/g, "&quot;")
+
+          .replace(/'/g, "&#039;");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Menu - Restaurant DBMS</title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f6fa;
+
+            color: #111827;
+
+            min-height: 100vh;
+        }
+
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
+           MAIN APP
+        ===================================================== */
+
+        .app {
+            display: flex;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            width: 278px;
+
+            padding: 32px 18px;
+
+            background: #111522;
+
+            color: #ffffff;
+
+            z-index: 1000;
+        }
+
+
+        .logo {
+            padding:
+                0 14px 26px;
+
+            margin-bottom: 24px;
+
+            border-bottom:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+        }
+
+
+        .logo h1 {
+            color: #ffffff;
+
+            font-size: 23px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+        }
+
+
+        .logo p {
+            margin-top: 6px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .nav {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .nav a {
+            display: flex;
+
+            align-items: center;
+
+            min-height: 50px;
+
+            padding:
+                0 15px;
+
+            border-radius: 8px;
+
+            color: #d7dbe5;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+
+        .nav a:hover {
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            color: #ffffff;
+        }
+
+
+        .nav a.active {
+            background: #5846df;
+
+            color: #ffffff;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main {
+            width:
+                calc(100% - 278px);
+
+            margin-left: 278px;
+
+            padding:
+                32px 38px 50px;
+
+            min-height: 100vh;
+        }
+
+
+        .container {
+            width: 100%;
+
+            max-width: 1220px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            background: #ffffff;
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            border-radius: 13px;
+
+            padding:
+                28px 30px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(15, 23, 42, 0.04);
+
+            text-align: left;
+        }
+
+
+        .page-header h2 {
+            color: #171b2b;
+
+            font-size: 32px;
+
+            line-height: 1.2;
+
+            font-weight: 700;
+        }
+
+
+        .page-header p {
+            margin-top: 8px;
+
+            color: #687386;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           SUMMARY CARDS
+        ===================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .summary-card {
+            background: #ffffff;
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            border-radius: 12px;
+
+            padding:
+                23px 25px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(15, 23, 42, 0.04);
+        }
+
+
+        .summary-card h3 {
+            color: #374151;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 10px;
+        }
+
+
+        .summary-card .number {
+            color: #5846df;
+
+            font-size: 32px;
+
+            line-height: 1;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           MENU SECTION
+        ===================================================== */
+
+        .menu-section {
+            background: #ffffff;
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            border-radius: 13px;
+
+            padding:
+                26px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(15, 23, 42, 0.04);
+        }
+
+
+        /* =====================================================
+           SECTION HEADER
+        ===================================================== */
+
+        .section-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .section-header h3 {
+            color: #171b2b;
+
+            font-size: 23px;
+
+            font-weight: 700;
+        }
+
+
+        .section-header p {
+            margin-top: 6px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           CATEGORY FILTER
+        ===================================================== */
+
+        .filter-box {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .filter-box label {
+            color: #374151;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .filter-box select {
+            height: 42px;
+
+            min-width: 175px;
+
+            padding:
+                0 12px;
+
+            border:
+                1px solid
+                #d5d9e1;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #111827;
+
+            font-size: 13px;
+
+            outline: none;
+
+            cursor: pointer;
+        }
+
+
+        .filter-box select:focus {
+            border-color: #5846df;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(88, 70, 223, 0.10);
+        }
+
+
+        /* =====================================================
+           MENU GRID
+        ===================================================== */
+
+        .menu-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        /* =====================================================
+           MENU CARD
+        ===================================================== */
+
+        .menu-card {
+            display: flex;
+
+            flex-direction: column;
+
+            min-height: 205px;
+
+            padding:
+                20px;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #e0e4eb;
+
+            border-radius: 11px;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        .menu-card:hover {
+            transform:
+                translateY(-2px);
+
+            border-color:
+                #d4cffc;
+
+            box-shadow:
+                0 7px 20px
+                rgba(15, 23, 42, 0.08);
+        }
+
+
+        /* =====================================================
+           MENU CARD TOP
+        ===================================================== */
+
+        .menu-top {
+            margin-bottom: 10px;
+        }
+
+
+        .item-name {
+            color: #5846df;
+
+            font-size: 19px;
+
+            line-height: 1.3;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           CATEGORY BADGE
+        ===================================================== */
+
+        .category {
+            display: inline-flex;
+
+            align-items: center;
+
+            width: fit-content;
+
+            padding:
+                5px 9px;
+
+            margin-bottom: 10px;
+
+            border-radius: 20px;
+
+            background: #eeeafd;
+
+            color: #633fe5;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        /* =====================================================
+           DESCRIPTION
+        ===================================================== */
+
+        .description {
+            color: #687386;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            min-height: 40px;
+
+            margin-bottom: auto;
+
+            padding-bottom: 18px;
+        }
+
+
+        /* =====================================================
+           BOTTOM
+        ===================================================== */
+
+        .menu-bottom {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding-top: 12px;
+
+            border-top:
+                1px solid
+                #f0f1f4;
+        }
+
+
+        .price {
+            color: #111827;
+
+            font-size: 20px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           AVAILABILITY
+        ===================================================== */
+
+        .availability {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding:
+                6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .available {
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .unavailable {
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .message {
+            padding:
+                45px 20px;
+
+            text-align: center;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        .error {
+            padding:
+                15px;
+
+            border-radius: 8px;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE - 1100
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .menu-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE - 900
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+
+            .main {
+                width:
+                    calc(100% - 220px);
+
+                margin-left: 220px;
+
+                padding:
+                    25px 22px 40px;
+            }
+
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE - 700
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .section-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .filter-box {
+                width: 100%;
+            }
+
+
+            .filter-box select {
+                flex: 1;
+
+                width: 100%;
+            }
+
+
+            .summary-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .menu-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE - 650
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            .app {
+                display: block;
+            }
+
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                padding:
+                    20px 14px;
+            }
+
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+
+            .nav {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .nav a {
+                min-height: 44px;
+            }
+
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding:
+                    20px 14px 35px;
+            }
+
+
+            .page-header {
+                padding:
+                    24px 20px;
+            }
+
+
+            .page-header h2 {
+                font-size: 27px;
+            }
+
+
+            .menu-section {
+                padding:
+                    20px 16px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="logo">
+
+            <h1>
+                Restaurant DBMS
+            </h1>
+
+            <p>
+                Management System
+            </p>
+
+        </div>
+
+
+        <nav class="nav">
+
+
+            <a href="/">
+                Dashboard
+            </a>
+
+
+            <a href="/tables">
+                Tables
+            </a>
+
+
+            <a href="/reservations">
+                Reservations
+            </a>
+
+
+            <a href="/orders">
+                Orders
+            </a>
+
+
+            <a
+                href="/menu"
+                class="active"
+            >
+                Menu
+            </a>
+
+
+            <a href="/billing">
+                Billing & Payments
+            </a>
+
+
+            <a href="/reports">
+                Reports
+            </a>
+
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
+            <section class="page-header">
+
+                <h2>
+                    Restaurant Menu
+                </h2>
+
+                <p>
+                    Manage menu items, categories, prices and availability
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SUMMARY
+            ================================================== -->
+
+            <section class="summary-grid">
+
+
+                <div class="summary-card">
+
+                    <h3>
+                        Total Items
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="totalItems"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+
+                <div class="summary-card">
+
+                    <h3>
+                        Available
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="availableItems"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+
+                <div class="summary-card">
+
+                    <h3>
+                        Unavailable
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="unavailableItems"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MENU
+            ================================================== -->
+
+            <section class="menu-section">
+
+
+                <div class="section-header">
+
+
+                    <div>
+
+                        <h3>
+                            Menu Items
+                        </h3>
+
+                        <p>
+                            Current restaurant menu
+                        </p>
+
+                    </div>
+
+
+                    <div class="filter-box">
+
+                        <label
+                            for="categoryFilter"
+                        >
+                            Category:
+                        </label>
+
+
+                        <select
+                            id="categoryFilter"
+                        >
+
+                            <option value="ALL">
+                                All Categories
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div
+                    id="menuMessage"
+                    class="message"
+                >
+                    Loading menu...
+                </div>
+
+
+
+                <div
+                    id="menuGrid"
+                    class="menu-grid"
+                    style="display:none;"
+                >
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<script>
+
+
+/* ============================================================
+   DATA
+============================================================ */
+
+let allMenuItems = [];
+
+
+/* ============================================================
+   CHECK AVAILABILITY
+============================================================ */
+
+function isItemAvailable(item) {
+
+    const value =
+        item.is_available;
+
+
+    return (
+
+        value === true ||
+
+        value === 1 ||
+
+        value === "1" ||
+
+        (
+            typeof value === "string" &&
+            value.toLowerCase() === "true"
+        )
+
+    );
+
+}
+
+
+/* ============================================================
+   HTML ESCAPE
+============================================================ */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ============================================================
+   LOAD MENU
+============================================================ */
+
+async function loadMenu() {
+
+    const message =
+        document.getElementById(
+            "menuMessage"
+        );
+
+
+    const grid =
+        document.getElementById(
+            "menuGrid"
+        );
+
+
+    try {
+
+        message.style.display =
+            "block";
+
+        message.textContent =
+            "Loading menu...";
+
+
+        grid.style.display =
+            "none";
+
+
+        const response =
+            await fetch(
+                "/api/menu",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            data.status !== "success"
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load menu"
+            );
+
+        }
+
+
+        allMenuItems =
+            Array.isArray(
+                data.menu_items
+            )
+                ? data.menu_items
+                : [];
+
+
+        updateSummary(
+            allMenuItems
+        );
+
+
+        populateCategories(
+            allMenuItems
+        );
+
+
+        displayMenu(
+            allMenuItems
+        );
+
+
+        message.style.display =
+            "none";
+
+
+        grid.style.display =
+            "grid";
+
+    }
+    catch (error) {
+
+        console.error(
+            "Menu loading error:",
+            error
+        );
+
+
+        grid.style.display =
+            "none";
+
+
+        message.style.display =
+            "block";
+
+
+        message.innerHTML = `
+
+            <div class="error">
+
+                Failed to load menu.
+
+                <br><br>
+
+                ${escapeHtml(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   UPDATE SUMMARY
+============================================================ */
+
+function updateSummary(items) {
+
+    const total =
+        items.length;
+
+
+    const available =
+        items.filter(
+            item =>
+                isItemAvailable(item)
+        ).length;
+
+
+    const unavailable =
+        total - available;
+
+
+    document.getElementById(
+        "totalItems"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "availableItems"
+    ).textContent =
+        available;
+
+
+    document.getElementById(
+        "unavailableItems"
+    ).textContent =
+        unavailable;
+
+}
+
+
+/* ============================================================
+   POPULATE CATEGORIES
+============================================================ */
+
+function populateCategories(items) {
+
+    const select =
+        document.getElementById(
+            "categoryFilter"
+        );
+
+
+    const currentValue =
+        select.value;
+
+
+    select.innerHTML = `
+
+        <option value="ALL">
+            All Categories
+        </option>
+
+    `;
+
+
+    const categories =
+        [
+            ...new Set(
+
+                items
+
+                    .map(
+                        item =>
+                            item.category
+                    )
+
+                    .filter(Boolean)
+
+            )
+        ]
+
+        .sort();
+
+
+    categories.forEach(
+        category => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                category;
+
+
+            option.textContent =
+                category;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (
+        categories.includes(
+            currentValue
+        )
+    ) {
+
+        select.value =
+            currentValue;
+
+    }
+
+}
+
+
+/* ============================================================
+   DISPLAY MENU
+============================================================ */
+
+function displayMenu(items) {
+
+    const grid =
+        document.getElementById(
+            "menuGrid"
+        );
+
+
+    grid.innerHTML = "";
+
+
+    if (
+        !items.length
+    ) {
+
+        grid.innerHTML = `
+
+            <div
+                class="message"
+                style="grid-column:1/-1;"
+            >
+
+                No menu items found.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    items.forEach(
+        item => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "menu-card";
+
+
+            const available =
+                isItemAvailable(
+                    item
+                );
+
+
+            const availabilityClass =
+                available
+                    ? "available"
+                    : "unavailable";
+
+
+            const availabilityText =
+                available
+                    ? "AVAILABLE"
+                    : "UNAVAILABLE";
+
+
+            const description =
+                item.description ||
+                "No description available.";
+
+
+            const price =
+                Number(
+                    item.price
+                );
+
+
+            card.innerHTML = `
+
+                <div class="menu-top">
+
+                    <div class="item-name">
+
+                        ${escapeHtml(
+                            item.item_name
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <span class="category">
+
+                        ${escapeHtml(
+                            item.category
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    ${escapeHtml(
+                        description
+                    )}
+
+                </div>
+
+
+                <div class="menu-bottom">
+
+
+                    <div class="price">
+
+                        ₹${
+                            Number.isFinite(price)
+                                ? price.toFixed(2)
+                                : "0.00"
+                        }
+
+                    </div>
+
+
+                    <span
+                        class="
+                            availability
+                            ${availabilityClass}
+                        "
+                    >
+
+                        ${availabilityText}
+
+                    </span>
+
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   CATEGORY FILTER
+============================================================ */
+
+document
+    .getElementById(
+        "categoryFilter"
+    )
+    .addEventListener(
+        "change",
+        function () {
+
+            const selected =
+                this.value;
+
+
+            if (
+                selected === "ALL"
+            ) {
+
+                displayMenu(
+                    allMenuItems
+                );
+
+                return;
+
+            }
+
+
+            const filtered =
+                allMenuItems.filter(
+                    item =>
+                        item.category ===
+                        selected
+                );
+
+
+            displayMenu(
+                filtered
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   INITIAL LOAD
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadMenu();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1752 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders - Restaurant DBMS</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f6fa;
+        color: #111827;
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font-family: inherit;
+      }
+
+      .app-layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* SIDEBAR */
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 278px;
+        background: #111522;
+        color: white;
+        padding: 32px 18px;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+
+      .brand {
+        padding: 0 14px 26px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        margin-bottom: 24px;
+      }
+
+      .brand h2 {
+        font-size: 23px;
+        line-height: 1.25;
+      }
+
+      .brand p {
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: 13px;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        min-height: 50px;
+        padding: 0 15px;
+        border-radius: 8px;
+        color: #d7dbe5;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: white;
+      }
+
+      .nav-link.active {
+        background: #5846df;
+        color: white;
+        font-weight: 700;
+      }
+
+      /* MAIN */
+
+      .main-content {
+        width: calc(100% - 278px);
+        margin-left: 278px;
+        padding: 32px 38px 50px;
+        min-height: 100vh;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 1220px;
+        margin: 0 auto;
+      }
+
+      /* PAGE HEADER */
+
+      .page-header {
+        background: white;
+        border: 1px solid #e8eaf0;
+        border-radius: 13px;
+        padding: 27px 30px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+      }
+
+      .page-header h1 {
+        font-size: 32px;
+        color: #171b2b;
+      }
+
+      .page-header p {
+        margin-top: 8px;
+        color: #687386;
+        font-size: 15px;
+      }
+
+      /* SUMMARY */
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      .summary-card {
+        background: white;
+        border: 1px solid #e6e8ee;
+        border-radius: 12px;
+        padding: 21px 24px;
+        min-height: 112px;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.035);
+      }
+
+      .summary-card h3 {
+        color: #374151;
+        font-size: 14px;
+        margin-bottom: 11px;
+      }
+
+      .summary-number {
+        color: #5546dc;
+        font-size: 30px;
+        font-weight: 700;
+      }
+
+      /* ORDERS CARD */
+
+      .orders-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 13px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+      }
+
+      .orders-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+        padding: 25px 28px;
+        border-bottom: 1px solid #edf0f4;
+      }
+
+      .orders-heading h2 {
+        font-size: 22px;
+        color: #171b2b;
+      }
+
+      .orders-heading p {
+        margin-top: 5px;
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .order-actions {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      /* NEW ORDER BUTTON */
+
+      .primary-button {
+        height: 40px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 7px;
+        background: #5846df;
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary-button:hover {
+        background: #4938cf;
+      }
+
+      /* FILTER */
+
+      .order-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .order-filter label {
+        color: #111827;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .order-filter select {
+        min-width: 130px;
+        height: 40px;
+        padding: 0 12px;
+        border: 1px solid #d5d9e1;
+        border-radius: 7px;
+        background: white;
+        cursor: pointer;
+      }
+
+      /* SEARCH */
+
+      .search-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 17px 28px;
+        background: #fafbfc;
+        border-bottom: 1px solid #edf0f4;
+      }
+
+      .order-count-label {
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .search-input {
+        width: 280px;
+        height: 39px;
+        padding: 0 13px;
+        border: 1px solid #d7dbe3;
+        border-radius: 7px;
+        background: white;
+        outline: none;
+      }
+
+      .search-input:focus {
+        border-color: #5846df;
+        box-shadow: 0 0 0 3px rgba(88, 70, 223, 0.1);
+      }
+
+      /* TABLE */
+
+      .orders-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+      }
+
+      .orders-table th {
+        padding: 15px 14px;
+        text-align: left;
+        color: #374151;
+        font-size: 12px;
+        font-weight: 700;
+        background: #f8f9fb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .orders-table td {
+        padding: 17px 14px;
+        color: #1f2937;
+        font-size: 13px;
+        border-bottom: 1px solid #edf0f3;
+        white-space: nowrap;
+      }
+
+      .orders-table tbody tr:hover {
+        background: #fafaff;
+      }
+
+      .order-id {
+        color: #5546dc;
+        font-weight: 700;
+      }
+
+      .customer-name {
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .reservation-pill {
+        display: inline-flex;
+        padding: 5px 9px;
+        border-radius: 6px;
+        background: #f1efff;
+        color: #5141d0;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .items-count,
+      .order-total {
+        font-weight: 700;
+      }
+
+      /* STATUS */
+
+      .status-select {
+        min-width: 128px;
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid #d5d9e1;
+        border-radius: 7px;
+        background: white;
+        color: #374151;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .status-select:focus {
+        border-color: #5846df;
+        box-shadow: 0 0 0 3px rgba(88, 70, 223, 0.1);
+      }
+
+      .status-select:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      /* EMPTY / ERROR */
+
+      .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+        color: #6b7280;
+      }
+
+      .empty-state h3 {
+        color: #374151;
+        margin-bottom: 6px;
+      }
+
+      .error-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: #991b1b;
+        background: #fff7f7;
+      }
+
+      .retry-button {
+        margin-top: 14px;
+        padding: 9px 16px;
+        border: none;
+        border-radius: 7px;
+        background: #5846df;
+        color: white;
+        cursor: pointer;
+      }
+
+      /* MODAL */
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal-overlay.open {
+        display: flex;
+      }
+
+      .order-modal {
+        width: min(760px, 100%);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 25px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .modal-header h2 {
+        font-size: 21px;
+        color: #171b2b;
+      }
+
+      .modal-close {
+        border: none;
+        background: transparent;
+        font-size: 30px;
+        color: #6b7280;
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      .modal-body {
+        padding: 24px 25px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .form-field label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #374151;
+      }
+
+      .form-field select,
+      .form-field input {
+        height: 42px;
+        padding: 0 11px;
+        border: 1px solid #d5d9e1;
+        border-radius: 7px;
+        background: white;
+        outline: none;
+      }
+
+      .form-field select:focus,
+      .form-field input:focus {
+        border-color: #5846df;
+        box-shadow: 0 0 0 3px rgba(88, 70, 223, 0.1);
+      }
+
+      .items-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 24px 0 12px;
+      }
+
+      .items-heading h3 {
+        font-size: 15px;
+        color: #374151;
+      }
+
+      .secondary-button {
+        height: 36px;
+        padding: 0 12px;
+        border: 1px solid #5846df;
+        border-radius: 7px;
+        background: white;
+        color: #5846df;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .order-item-row {
+        display: grid;
+        grid-template-columns: 1fr 120px 40px;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 12px;
+      }
+
+      .remove-item-button {
+        height: 42px;
+        border: 1px solid #fecaca;
+        border-radius: 7px;
+        background: #fff1f2;
+        color: #b91c1c;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .modal-message {
+        display: none;
+        margin-top: 15px;
+        padding: 11px 13px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .modal-message.show {
+        display: block;
+      }
+
+      .modal-message.error {
+        background: #fff1f2;
+        color: #991b1b;
+        border: 1px solid #fecdd3;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 18px 25px;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .cancel-button {
+        height: 40px;
+        padding: 0 16px;
+        border: 1px solid #d5d9e1;
+        border-radius: 7px;
+        background: white;
+        color: #374151;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .create-button {
+        height: 40px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 7px;
+        background: #5846df;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .create-button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      /* RESPONSIVE */
+
+      @media (max-width: 1100px) {
+        .summary-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 850px) {
+        .sidebar {
+          width: 220px;
+        }
+
+        .main-content {
+          width: calc(100% - 220px);
+          margin-left: 220px;
+          padding: 25px 22px 40px;
+        }
+
+        .orders-card-header,
+        .search-row {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .order-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .search-input {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .sidebar {
+          position: static;
+          width: 100%;
+        }
+
+        .app-layout {
+          flex-direction: column;
+        }
+
+        .main-content {
+          width: 100%;
+          margin-left: 0;
+          padding: 20px 14px 35px;
+        }
+
+        .nav-links {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .order-item-row {
+          grid-template-columns: 1fr 100px 40px;
+        }
+
+        .order-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .order-filter {
+          justify-content: space-between;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <h2>Restaurant DBMS</h2>
+          <p>Management System</p>
+        </div>
+
+        <nav class="nav-links">
+          <a class="nav-link" href="/"> Dashboard </a>
+
+          <a class="nav-link" href="/tables"> Tables </a>
+
+          <a class="nav-link" href="/reservations"> Reservations </a>
+
+          <a class="nav-link active" href="/orders"> Orders </a>
+
+          <a class="nav-link" href="/menu"> Menu </a>
+
+          <a class="nav-link" href="/billing"> Billing & Payments </a>
+
+          <a class="nav-link" href="/reports"> Reports </a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-container">
+          <section class="page-header">
+            <h1>Orders</h1>
+
+            <p>Manage restaurant food orders and order status.</p>
+          </section>
+
+          <section class="summary-grid">
+            <div class="summary-card">
+              <h3>Total Orders</h3>
+
+              <div id="total-orders" class="summary-number">Loading...</div>
+            </div>
+
+            <div class="summary-card">
+              <h3>Placed</h3>
+
+              <div id="placed-orders" class="summary-number">Loading...</div>
+            </div>
+
+            <div class="summary-card">
+              <h3>Preparing</h3>
+
+              <div id="preparing-orders" class="summary-number">Loading...</div>
+            </div>
+
+            <div class="summary-card">
+              <h3>Served</h3>
+
+              <div id="served-orders" class="summary-number">Loading...</div>
+            </div>
+          </section>
+
+          <section class="orders-card">
+            <div class="orders-card-header">
+              <div class="orders-heading">
+                <h2>All Orders</h2>
+
+                <p>Current restaurant food orders</p>
+              </div>
+
+              <div class="order-actions">
+                <button
+                  type="button"
+                  class="primary-button"
+                  onclick="openOrderModal()"
+                >
+                  + New Order
+                </button>
+
+                <div class="order-filter">
+                  <label for="status-filter"> Status: </label>
+
+                  <select id="status-filter">
+                    <option value="ALL">All Orders</option>
+
+                    <option value="PLACED">Placed</option>
+
+                    <option value="PREPARING">Preparing</option>
+
+                    <option value="READY">Ready</option>
+
+                    <option value="SERVED">Served</option>
+
+                    <option value="CANCELLED">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="search-row">
+              <div id="order-count-label" class="order-count-label">
+                Loading orders...
+              </div>
+
+              <input
+                type="search"
+                id="search-orders"
+                class="search-input"
+                placeholder="Search customer, waiter or order..."
+              />
+            </div>
+
+            <div id="orders-container" class="orders-table-wrapper">
+              <div class="empty-state">Loading orders...</div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- CREATE ORDER MODAL -->
+
+    <div
+      id="order-modal-overlay"
+      class="modal-overlay"
+      onclick="handleOrderModalOverlayClick(event)"
+    >
+      <div
+        class="order-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="order-modal-title"
+      >
+        <div class="modal-header">
+          <h2 id="order-modal-title">Create New Order</h2>
+
+          <button
+            type="button"
+            class="modal-close"
+            onclick="closeOrderModal()"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+
+        <form id="create-order-form" onsubmit="submitNewOrder(event)">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="order-reservation"> Seated Reservation </label>
+
+                <select id="order-reservation" required>
+                  <option value="">Loading reservations...</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="order-waiter"> Waiter </label>
+
+                <select id="order-waiter" required>
+                  <option value="">Loading waiters...</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="items-heading">
+              <h3>Order Items</h3>
+
+              <button
+                type="button"
+                class="secondary-button"
+                onclick="addOrderItemRow()"
+              >
+                + Add Item
+              </button>
+            </div>
+
+            <div id="order-items-container"></div>
+
+            <div id="order-modal-message" class="modal-message"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="cancel-button"
+              onclick="closeOrderModal()"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              id="create-order-button"
+              class="create-button"
+            >
+              Create Order
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let allOrders = [];
+
+      let orderFormReservations = [];
+
+      let orderFormWaiters = [];
+
+      let orderFormMenu = [];
+
+      const ORDER_STATUSES = [
+        "PLACED",
+        "PREPARING",
+        "READY",
+        "SERVED",
+        "CANCELLED",
+      ];
+
+      function escapeHTML(value) {
+        if (value === null || value === undefined) {
+          return "";
+        }
+
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function normalizeStatus(status) {
+        return String(status || "")
+          .trim()
+          .toUpperCase();
+      }
+
+      function formatCurrency(value) {
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: "INR",
+          minimumFractionDigits: 2,
+        }).format(Number(value || 0));
+      }
+
+      function formatOrderTime(value) {
+        if (!value) {
+          return "N/A";
+        }
+
+        const date = new Date(String(value));
+
+        if (!Number.isNaN(date.getTime())) {
+          return date.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        }
+
+        return String(value);
+      }
+
+      /* ============================================================
+   ORDER STATUS DROPDOWN
+   ============================================================ */
+
+      function createOrderStatusSelect(order) {
+        const currentStatus = normalizeStatus(order.order_status);
+
+        const options = ORDER_STATUSES.map(
+          (status) => `
+                <option
+                    value="${status}"
+                    ${status === currentStatus ? "selected" : ""}
+                >
+                    ${status}
+                </option>
+            `,
+        ).join("");
+
+        return `
+        <select
+            class="status-select"
+            data-order-id="${escapeHTML(order.order_id)}"
+            data-previous-status="${escapeHTML(currentStatus)}"
+            onchange="updateOrderStatus(this)"
+            aria-label="Change order status"
+        >
+            ${options}
+        </select>
+    `;
+      }
+
+      /* ============================================================
+   UPDATE ORDER STATUS
+   ============================================================ */
+
+      async function updateOrderStatus(selectElement) {
+        const orderId = selectElement.dataset.orderId;
+
+        const previousStatus = selectElement.dataset.previousStatus;
+
+        const newStatus = selectElement.value;
+
+        selectElement.disabled = true;
+
+        try {
+          const response = await fetch(`/api/orders/${orderId}/status`, {
+            method: "PATCH",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+              status: newStatus,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to update order status");
+          }
+
+          const order = allOrders.find(
+            (item) => String(item.order_id) === String(orderId),
+          );
+
+          if (order) {
+            order.order_status = newStatus;
+          }
+
+          selectElement.dataset.previousStatus = newStatus;
+
+          updateSummary(allOrders);
+
+          renderOrders();
+        } catch (error) {
+          console.error("Order status update error:", error);
+
+          selectElement.value = previousStatus;
+
+          alert(error.message || "Unable to update order status.");
+        } finally {
+          selectElement.disabled = false;
+        }
+      }
+
+      /* ============================================================
+   SUMMARY
+   ============================================================ */
+
+      function updateSummary(orders) {
+        const total = orders.length;
+
+        const placed = orders.filter(
+          (order) => normalizeStatus(order.order_status) === "PLACED",
+        ).length;
+
+        const preparing = orders.filter(
+          (order) => normalizeStatus(order.order_status) === "PREPARING",
+        ).length;
+
+        const served = orders.filter(
+          (order) => normalizeStatus(order.order_status) === "SERVED",
+        ).length;
+
+        document.getElementById("total-orders").textContent = total;
+
+        document.getElementById("placed-orders").textContent = placed;
+
+        document.getElementById("preparing-orders").textContent = preparing;
+
+        document.getElementById("served-orders").textContent = served;
+      }
+
+      /* ============================================================
+   FILTER + SEARCH
+   ============================================================ */
+
+      function getFilteredOrders() {
+        const selectedStatus = normalizeStatus(
+          document.getElementById("status-filter").value,
+        );
+
+        const search = document
+          .getElementById("search-orders")
+          .value.toLowerCase()
+          .trim();
+
+        return allOrders.filter((order) => {
+          const status = normalizeStatus(order.order_status);
+
+          if (selectedStatus !== "ALL" && status !== selectedStatus) {
+            return false;
+          }
+
+          const searchableText = [
+            order.order_id,
+
+            order.customer_name,
+
+            order.waiter_name,
+
+            order.reservation_id,
+
+            order.table_number,
+
+            order.order_status,
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          return !search || searchableText.includes(search);
+        });
+      }
+
+      /* ============================================================
+   RENDER ORDERS
+   ============================================================ */
+
+      function renderOrders() {
+        const container = document.getElementById("orders-container");
+
+        const filteredOrders = getFilteredOrders();
+
+        document.getElementById("order-count-label").textContent =
+          `${filteredOrders.length} of ${allOrders.length} orders`;
+
+        if (!filteredOrders.length) {
+          container.innerHTML = `
+
+            <div class="empty-state">
+
+                <h3>
+                    No orders found
+                </h3>
+
+                <p>
+                    Try changing the filter or search text.
+                </p>
+
+            </div>
+
+        `;
+
+          return;
+        }
+
+        let html = `
+
+        <table class="orders-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Order ID</th>
+
+                    <th>Customer</th>
+
+                    <th>Waiter</th>
+
+                    <th>Reservation</th>
+
+                    <th>Items</th>
+
+                    <th>Total</th>
+
+                    <th>Order Time</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+        filteredOrders.forEach((order) => {
+          const itemCount = order.item_count ?? order.items ?? 0;
+
+          const total = order.order_total ?? order.total ?? 0;
+
+          html += `
+
+                <tr>
+
+                    <td>
+
+                        <span class="order-id">
+
+                            #${escapeHTML(order.order_id)}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="customer-name">
+
+                            ${escapeHTML(order.customer_name || "N/A")}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(order.waiter_name || "N/A")}
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="reservation-pill">
+
+                            #${escapeHTML(order.reservation_id ?? "N/A")}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="items-count">
+
+                            ${escapeHTML(itemCount)}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="order-total">
+
+                            ${formatCurrency(total)}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(formatOrderTime(order.order_time))}
+
+                    </td>
+
+
+                    <td>
+
+                        ${createOrderStatusSelect(order)}
+
+                    </td>
+
+                </tr>
+
+            `;
+        });
+
+        html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+        container.innerHTML = html;
+      }
+
+      /* ============================================================
+   LOAD ORDERS
+   ============================================================ */
+
+      async function loadOrders() {
+        const container = document.getElementById("orders-container");
+
+        container.innerHTML = `
+
+        <div class="empty-state">
+            Loading orders...
+        </div>
+
+    `;
+
+        try {
+          const response = await fetch("/api/orders", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to load orders");
+          }
+
+          allOrders = Array.isArray(data.orders) ? data.orders : [];
+
+          updateSummary(allOrders);
+
+          renderOrders();
+        } catch (error) {
+          console.error("Orders error:", error);
+
+          document.getElementById("total-orders").textContent = "-";
+
+          document.getElementById("placed-orders").textContent = "-";
+
+          document.getElementById("preparing-orders").textContent = "-";
+
+          document.getElementById("served-orders").textContent = "-";
+
+          container.innerHTML = `
+
+            <div class="error-state">
+
+                <strong>
+                    Unable to load orders
+                </strong>
+
+                <br>
+
+                <span>
+                    ${escapeHTML(error.message)}
+                </span>
+
+                <br>
+
+                <button
+                    type="button"
+                    class="retry-button"
+                    onclick="loadOrders()"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        `;
+        }
+      }
+
+      /* ============================================================
+   ORDER MODAL
+   ============================================================ */
+
+      function openOrderModal() {
+        document.getElementById("create-order-form").reset();
+
+        document.getElementById("order-items-container").innerHTML = "";
+
+        clearOrderModalMessage();
+
+        document.getElementById("order-modal-overlay").classList.add("open");
+
+        loadOrderFormData();
+      }
+
+      function closeOrderModal() {
+        document.getElementById("order-modal-overlay").classList.remove("open");
+      }
+
+      function handleOrderModalOverlayClick(event) {
+        if (event.target.id === "order-modal-overlay") {
+          closeOrderModal();
+        }
+      }
+
+      function showOrderModalMessage(message) {
+        const box = document.getElementById("order-modal-message");
+
+        box.textContent = message;
+
+        box.className = "modal-message show error";
+      }
+
+      function clearOrderModalMessage() {
+        const box = document.getElementById("order-modal-message");
+
+        box.textContent = "";
+
+        box.className = "modal-message";
+      }
+
+      /* ============================================================
+   LOAD FORM DATA
+   ============================================================ */
+
+      async function loadOrderFormData() {
+        const reservationSelect = document.getElementById("order-reservation");
+
+        const waiterSelect = document.getElementById("order-waiter");
+
+        try {
+          reservationSelect.innerHTML = `<option value="">
+                Loading reservations...
+            </option>`;
+
+          waiterSelect.innerHTML = `<option value="">
+                Loading waiters...
+            </option>`;
+
+          const [reservationsResponse, waitersResponse, menuResponse] =
+            await Promise.all([
+              fetch("/api/reservations", {
+                cache: "no-store",
+              }),
+
+              fetch("/api/waiters", {
+                cache: "no-store",
+              }),
+
+              fetch("/api/menu", {
+                cache: "no-store",
+              }),
+            ]);
+
+          const reservationsData = await reservationsResponse.json();
+
+          const waitersData = await waitersResponse.json();
+
+          const menuData = await menuResponse.json();
+
+          if (
+            !reservationsResponse.ok ||
+            reservationsData.status !== "success"
+          ) {
+            throw new Error(
+              reservationsData.message || "Unable to load reservations",
+            );
+          }
+
+          if (!waitersResponse.ok || waitersData.status !== "success") {
+            throw new Error(waitersData.message || "Unable to load waiters");
+          }
+
+          if (!menuResponse.ok || menuData.status !== "success") {
+            throw new Error(menuData.message || "Unable to load menu");
+          }
+
+          orderFormReservations = Array.isArray(reservationsData.reservations)
+            ? reservationsData.reservations.filter(
+                (reservation) =>
+                  normalizeStatus(reservation.reservation_status) === "SEATED",
+              )
+            : [];
+
+          orderFormWaiters = Array.isArray(waitersData.waiters)
+            ? waitersData.waiters
+            : [];
+
+          orderFormMenu = Array.isArray(menuData.menu_items)
+            ? menuData.menu_items.filter(isMenuItemAvailable)
+            : [];
+
+          /* RESERVATIONS */
+
+          if (orderFormReservations.length) {
+            reservationSelect.innerHTML = `<option value="">
+                    Select seated reservation
+                </option>`;
+          } else {
+            reservationSelect.innerHTML = `<option value="">
+                    No SEATED reservations available
+                </option>`;
+          }
+
+          orderFormReservations.forEach((reservation) => {
+            const option = document.createElement("option");
+
+            option.value = reservation.reservation_id;
+
+            option.textContent =
+              `#${reservation.reservation_id} - ` +
+              `${reservation.customer_name} - ` +
+              `${reservation.table_number} - ` +
+              `${String(reservation.reservation_date).slice(0, 10)}`;
+
+            reservationSelect.appendChild(option);
+          });
+
+          /* WAITERS */
+
+          if (orderFormWaiters.length) {
+            waiterSelect.innerHTML = `<option value="">
+                    Select waiter
+                </option>`;
+          } else {
+            waiterSelect.innerHTML = `<option value="">
+                    No active waiters available
+                </option>`;
+          }
+
+          orderFormWaiters.forEach((waiter) => {
+            const option = document.createElement("option");
+
+            option.value = waiter.waiter_id;
+
+            option.textContent = `${waiter.waiter_name} (${waiter.shift})`;
+
+            waiterSelect.appendChild(option);
+          });
+
+          /* MENU */
+
+          if (orderFormMenu.length) {
+            addOrderItemRow();
+          } else {
+            document.getElementById("order-items-container").innerHTML =
+              `<div class="empty-state">
+                    No available menu items found.
+                </div>`;
+          }
+        } catch (error) {
+          console.error("Order form loading error:", error);
+
+          showOrderModalMessage(
+            error.message || "Unable to load order form data.",
+          );
+        }
+      }
+
+      /* ============================================================
+   MENU AVAILABILITY
+   ============================================================ */
+
+      function isMenuItemAvailable(item) {
+        const value = item.is_available;
+
+        return (
+          value === true ||
+          value === 1 ||
+          value === "1" ||
+          (typeof value === "string" && value.toLowerCase() === "true")
+        );
+      }
+
+      /* ============================================================
+   ADD ORDER ITEM ROW
+   ============================================================ */
+
+      function addOrderItemRow() {
+        const container = document.getElementById("order-items-container");
+
+        if (!orderFormMenu.length) {
+          container.innerHTML = `<div class="empty-state">
+                No available menu items found.
+            </div>`;
+
+          return;
+        }
+
+        const row = document.createElement("div");
+
+        row.className = "order-item-row";
+
+        /* MENU ITEM */
+
+        const itemField = document.createElement("div");
+
+        itemField.className = "form-field";
+
+        const itemLabel = document.createElement("label");
+
+        itemLabel.textContent = "Menu Item";
+
+        const itemSelect = document.createElement("select");
+
+        itemSelect.required = true;
+
+        itemSelect.className = "order-item-select";
+
+        const placeholder = document.createElement("option");
+
+        placeholder.value = "";
+
+        placeholder.textContent = "Select menu item";
+
+        itemSelect.appendChild(placeholder);
+
+        orderFormMenu.forEach((menuItem) => {
+          const option = document.createElement("option");
+
+          option.value = menuItem.item_id;
+
+          option.textContent = `${menuItem.item_name} - ₹${Number(
+            menuItem.price || 0,
+          ).toFixed(2)}`;
+
+          itemSelect.appendChild(option);
+        });
+
+        itemField.appendChild(itemLabel);
+
+        itemField.appendChild(itemSelect);
+
+        /* QUANTITY */
+
+        const quantityField = document.createElement("div");
+
+        quantityField.className = "form-field";
+
+        const quantityLabel = document.createElement("label");
+
+        quantityLabel.textContent = "Quantity";
+
+        const quantityInput = document.createElement("input");
+
+        quantityInput.type = "number";
+
+        quantityInput.min = "1";
+
+        quantityInput.value = "1";
+
+        quantityInput.required = true;
+
+        quantityInput.className = "order-item-quantity";
+
+        quantityField.appendChild(quantityLabel);
+
+        quantityField.appendChild(quantityInput);
+
+        /* REMOVE BUTTON */
+
+        const removeButton = document.createElement("button");
+
+        removeButton.type = "button";
+
+        removeButton.className = "remove-item-button";
+
+        removeButton.textContent = "×";
+
+        removeButton.title = "Remove item";
+
+        removeButton.onclick = () => {
+          row.remove();
+
+          if (!container.querySelector(".order-item-row")) {
+            addOrderItemRow();
+          }
+        };
+
+        row.appendChild(itemField);
+
+        row.appendChild(quantityField);
+
+        row.appendChild(removeButton);
+
+        container.appendChild(row);
+      }
+
+      /* ============================================================
+   CREATE NEW ORDER
+   ============================================================ */
+
+      async function submitNewOrder(event) {
+        event.preventDefault();
+
+        clearOrderModalMessage();
+
+        const reservationId =
+          document.getElementById("order-reservation").value;
+
+        const waiterId = document.getElementById("order-waiter").value;
+
+        const rows = Array.from(
+          document.querySelectorAll("#order-items-container .order-item-row"),
+        );
+
+        const submitButton = document.getElementById("create-order-button");
+
+        if (!reservationId || !waiterId) {
+          showOrderModalMessage(
+            "Please select a seated reservation and waiter.",
+          );
+
+          return;
+        }
+
+        if (!rows.length) {
+          showOrderModalMessage("Please add at least one menu item.");
+
+          return;
+        }
+
+        const items = [];
+
+        const seen = new Set();
+
+        for (const row of rows) {
+          const itemId = row.querySelector(".order-item-select").value;
+
+          const quantity = Number(
+            row.querySelector(".order-item-quantity").value,
+          );
+
+          if (!itemId) {
+            showOrderModalMessage("Please select a menu item for every row.");
+
+            return;
+          }
+
+          if (!Number.isInteger(quantity) || quantity <= 0) {
+            showOrderModalMessage("Quantity must be a positive whole number.");
+
+            return;
+          }
+
+          if (seen.has(itemId)) {
+            showOrderModalMessage(
+              "Do not select the same menu item more than once.",
+            );
+
+            return;
+          }
+
+          seen.add(itemId);
+
+          items.push({
+            item_id: Number(itemId),
+            quantity: quantity,
+          });
+        }
+
+        submitButton.disabled = true;
+
+        submitButton.textContent = "Creating...";
+
+        try {
+          const response = await fetch("/api/orders", {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+              reservation_id: Number(reservationId),
+
+              waiter_id: Number(waiterId),
+
+              items: items,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.status !== "success") {
+            throw new Error(data.message || "Unable to create order");
+          }
+
+          closeOrderModal();
+
+          await loadOrders();
+
+          alert(`Order #${data.order_id} created successfully.`);
+        } catch (error) {
+          console.error("Create order error:", error);
+
+          showOrderModalMessage(error.message || "Unable to create order.");
+        } finally {
+          submitButton.disabled = false;
+
+          submitButton.textContent = "Create Order";
+        }
+      }
+
+      /* ============================================================
+   EVENTS
+   ============================================================ */
+
+      document
+        .getElementById("status-filter")
+        .addEventListener("change", renderOrders);
+
+      document
+        .getElementById("search-orders")
+        .addEventListener("input", renderOrders);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeOrderModal();
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", loadOrders);
+    </script>
+  </body>
+</html>

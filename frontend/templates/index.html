@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Dashboard - Restaurant DBMS</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <!-- ================= SIDEBAR ================= -->
+
+      <aside class="sidebar">
+        <div class="brand">
+          <h2>Restaurant DBMS</h2>
+          <p>Management System</p>
+        </div>
+
+        <nav class="nav-links">
+          <a href="/" class="nav-link active"> Dashboard </a>
+
+          <a href="/tables" class="nav-link"> Tables </a>
+
+          <a href="/reservations" class="nav-link"> Reservations </a>
+
+          <a href="/orders" class="nav-link"> Orders </a>
+
+          <a href="/menu" class="nav-link"> Menu </a>
+
+          <a href="/billing" class="nav-link"> Billing & Payments </a>
+
+          <a href="/reports" class="nav-link"> Reports </a>
+        </nav>
+      </aside>
+
+      <!-- ================= MAIN CONTENT ================= -->
+
+      <main class="main-content">
+        <!-- PAGE HEADING -->
+
+        <section class="top-header">
+          <h1>Dashboard</h1>
+
+          <p>Overview of restaurant tables, reservations, orders and menu.</p>
+        </section>
+
+        <!-- ================= SUMMARY ================= -->
+
+        <section class="dashboard-grid">
+          <div class="stat-card">
+            <h3>Total Tables</h3>
+
+            <div id="table-count">Loading...</div>
+
+            <p class="stat-description">Restaurant seating tables</p>
+          </div>
+
+          <div class="stat-card">
+            <h3>Total Reservations</h3>
+
+            <div id="reservation-count">Loading...</div>
+
+            <p class="stat-description">Customer reservations</p>
+          </div>
+
+          <div class="stat-card">
+            <h3>Total Orders</h3>
+
+            <div id="order-count">Loading...</div>
+
+            <p class="stat-description">Food orders recorded</p>
+          </div>
+
+          <div class="stat-card">
+            <h3>Menu Items</h3>
+
+            <div id="menu-count">Loading...</div>
+
+            <p class="stat-description">Items in restaurant menu</p>
+          </div>
+        </section>
+
+        <!-- ================= BILLING OVERVIEW ================= -->
+
+        <section class="content-card">
+          <div class="section-title">
+            <h2>Billing Overview</h2>
+
+            <p>Current billing and payment summary</p>
+          </div>
+
+          <div class="dashboard-grid dashboard-grid-secondary">
+            <div class="stat-card compact-stat-card">
+              <h3>Total Bills</h3>
+
+              <div id="total-bills">Loading...</div>
+            </div>
+
+            <div class="stat-card compact-stat-card">
+              <h3>Payments Received</h3>
+
+              <div id="payments-received">Loading...</div>
+            </div>
+
+            <div class="stat-card compact-stat-card">
+              <h3>Total Revenue</h3>
+
+              <div id="total-revenue">Loading...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= QUICK ACCESS ================= -->
+
+        <section class="content-card">
+          <div class="section-title">
+            <h2>Quick Access</h2>
+
+            <p>Open a restaurant management module</p>
+          </div>
+
+          <div class="quick-actions">
+            <a href="/tables" class="quick-action">
+              <strong>Tables</strong>
+
+              <span> View table availability and capacity </span>
+            </a>
+
+            <a href="/reservations" class="quick-action">
+              <strong>Reservations</strong>
+
+              <span> Create and manage customer reservations </span>
+            </a>
+
+            <a href="/orders" class="quick-action">
+              <strong>Orders</strong>
+
+              <span> View food orders and order status </span>
+            </a>
+
+            <a href="/menu" class="quick-action">
+              <strong>Menu</strong>
+
+              <span> View menu items, prices and availability </span>
+            </a>
+
+            <a href="/billing" class="quick-action">
+              <strong>Billing & Payments</strong>
+
+              <span> Manage bills, discounts and payments </span>
+            </a>
+
+            <a href="/reports" class="quick-action">
+              <strong>Reports</strong>
+
+              <span> View revenue and operational reports </span>
+            </a>
+          </div>
+        </section>
+
+        <!-- ================= SYSTEM OVERVIEW ================= -->
+
+        <section class="content-card">
+          <div class="section-title">
+            <h2>System Overview</h2>
+
+            <p>Database-backed restaurant management modules</p>
+          </div>
+
+          <div class="overview-list">
+            <div class="overview-item">
+              <span>Table Management</span>
+              <span class="overview-status">Active</span>
+            </div>
+
+            <div class="overview-item">
+              <span>Reservation Management</span>
+              <span class="overview-status">Active</span>
+            </div>
+
+            <div class="overview-item">
+              <span>Order Management</span>
+              <span class="overview-status">Active</span>
+            </div>
+
+            <div class="overview-item">
+              <span>Menu Management</span>
+              <span class="overview-status">Active</span>
+            </div>
+
+            <div class="overview-item">
+              <span>Billing & Payments</span>
+              <span class="overview-status">Active</span>
+            </div>
+
+            <div class="overview-item">
+              <span>Reports</span>
+              <span class="overview-status">Active</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      async function loadDashboard() {
+        try {
+          const response = await fetch("/api/dashboard", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (data.status !== "success") {
+            throw new Error(data.message || "Unable to load dashboard");
+          }
+
+          document.getElementById("table-count").textContent = data.tables;
+
+          document.getElementById("reservation-count").textContent =
+            data.reservations;
+
+          document.getElementById("order-count").textContent = data.orders;
+
+          document.getElementById("menu-count").textContent = data.menu_items;
+        } catch (error) {
+          console.error("Dashboard error:", error);
+
+          document.getElementById("table-count").textContent = "-";
+
+          document.getElementById("reservation-count").textContent = "-";
+
+          document.getElementById("order-count").textContent = "-";
+
+          document.getElementById("menu-count").textContent = "-";
+        }
+      }
+
+      async function loadBillingSummary() {
+        try {
+          const response = await fetch("/api/billing-summary", {
+            cache: "no-store",
+          });
+
+          const data = await response.json();
+
+          if (data.status !== "success") {
+            throw new Error(data.message || "Unable to load billing summary");
+          }
+
+          document.getElementById("total-bills").textContent = Number(
+            data.total_bills || 0,
+          );
+
+          document.getElementById("payments-received").textContent =
+            "₹" +
+            Number(data.payments_received || 0).toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+
+          document.getElementById("total-revenue").textContent =
+            "₹" +
+            Number(data.revenue || 0).toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+        } catch (error) {
+          console.error("Billing summary error:", error);
+
+          document.getElementById("total-bills").textContent = "-";
+
+          document.getElementById("payments-received").textContent = "-";
+
+          document.getElementById("total-revenue").textContent = "-";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadDashboard();
+
+        loadBillingSummary();
+      });
+    </script>
+  </body>
+</html>
