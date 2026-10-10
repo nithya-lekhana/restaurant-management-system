@@ -1,0 +1,780 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="slides.css" />
+    <title>Restaurant Management System — Review 1</title>
+    <style>
+      @page {
+        size: 13.333in 7.5in;
+        margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #30271f;
+        font-family: Arial, sans-serif;
+      }
+      .slide {
+        width: 1280px;
+        height: 720px;
+        margin: 0 auto;
+        padding: 54px 82px;
+        background: #ffffff;
+        position: relative;
+        overflow: hidden;
+        page-break-after: always;
+      }
+      .slide:after {
+        content: "";
+        position: absolute;
+        left: 82px;
+        right: 82px;
+        bottom: 36px;
+        border-bottom: 1px solid #ddd4c5;
+      }
+      .eyebrow {
+        color: #a0442a;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        margin: 0 0 18px;
+      }
+      h1 {
+        font-size: 70px;
+        line-height: 0.98;
+        letter-spacing: -2px;
+        margin: 18px 0;
+        color: #30271f;
+      }
+      h2 {
+        font-size: 46px;
+        letter-spacing: -1px;
+        margin: 0 0 18px;
+        color: #30271f;
+      }
+      .sub,
+      .lead {
+        font-size: 23px;
+        line-height: 1.35;
+        color: #65594d;
+        max-width: 1080px;
+      }
+      .lead {
+        margin: 0 0 18px;
+      }
+      .identity {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 24px;
+        font-size: 17px;
+        color: #574b40;
+        max-width: 720px;
+      }
+      .identity b {
+        font-size: 20px;
+        color: #30271f;
+      }
+      .domain {
+        position: absolute;
+        bottom: 65px;
+        color: #a0442a;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 1.2px;
+      }
+      .cover {
+        background: #ffffff;
+      }
+      .cover:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 18px;
+        height: 100%;
+        background: #a0442a;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 42px;
+        font-size: 20px;
+        line-height: 1.45;
+      }
+      .intro p {
+        margin: 0 0 14px;
+      }
+      .accent-col {
+        border-left: 2px solid #d9d0c1;
+        padding-left: 32px;
+      }
+      .accent-col h3 {
+        color: #a0442a;
+        font-size: 19px;
+        margin: 0 0 6px;
+      }
+      .accent-col p {
+        margin: 0 0 14px;
+      }
+      .strip {
+        margin: 24px 0 0;
+        color: #a0442a;
+        font-weight: bold;
+        font-size: 15px;
+        letter-spacing: 0.7px;
+      }
+      .problem-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 42px;
+        margin-top: 14px;
+      }
+      .problem-grid article {
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd4c5;
+      }
+      .problem-grid b,
+      .objective-grid b,
+      .scope-grid b,
+      .tech-grid b {
+        color: #a0442a;
+        font-size: 17px;
+      }
+      .problem-grid p,
+      .objective-grid p,
+      .scope-grid p,
+      .tech-grid p {
+        font-size: 17px;
+        line-height: 1.3;
+        margin: 5px 0 0;
+        color: #494139;
+      }
+      .solution {
+        background: #f0e8dc;
+        padding: 12px 16px;
+        margin: 17px 0 0;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+      .solution b {
+        color: #a0442a;
+      }
+      .objective-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 42px;
+        margin-top: 14px;
+      }
+      .objective-grid article {
+        padding: 7px 0;
+        border-bottom: 1px solid #e3dacf;
+      }
+      .objective-grid p {
+        font-size: 16px;
+      }
+      .objective-grid .strip {
+        font-size: 14px;
+      }
+      .scope-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 38px;
+        margin-top: 10px;
+      }
+      .scope-grid article {
+        padding: 7px 0;
+        border-bottom: 1px solid #e3dacf;
+      }
+      .scope-grid p {
+        font-size: 16px;
+      }
+      .boundary {
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+        background: #f0e8dc;
+        padding: 11px 15px;
+        margin-top: 18px;
+        font-size: 15px;
+        line-height: 1.3;
+      }
+      .boundary b {
+        color: #a0442a;
+        min-width: 135px;
+      }
+      .tech-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 38px;
+        margin-top: 16px;
+      }
+      .tech-grid article {
+        padding: 9px 0;
+        border-bottom: 1px solid #ddd4c5;
+      }
+      .tech-grid p {
+        font-size: 16px;
+      }
+      .toolrow {
+        display: flex;
+        justify-content: space-between;
+        gap: 26px;
+        margin-top: 15px;
+        font-size: 15px;
+        color: #494139;
+      }
+      .toolrow b {
+        color: #a0442a;
+      }
+      .architecture-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding: 12px 14px;
+        background: #f0e8dc;
+        color: #a0442a;
+        font-size: 14px;
+        letter-spacing: 0.4px;
+      }
+      .architecture-line span {
+        font-size: 20px;
+      }
+      .note {
+        font-size: 14px;
+        color: #65594d;
+        margin-top: 10px;
+      }
+      .final-layout {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 42px;
+        margin-top: 14px;
+      }
+      .architecture {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 3px;
+      }
+      .architecture div {
+        background: #f0e8dc;
+        border-left: 5px solid #a0442a;
+        padding: 10px 16px;
+        font-size: 17px;
+      }
+      .architecture small {
+        display: block;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 4px;
+        color: #65594d;
+      }
+      .architecture > span {
+        text-align: center;
+        line-height: 14px;
+        color: #a0442a;
+        font-size: 17px;
+      }
+      .conclusion {
+        border-left: 2px solid #d9d0c1;
+        padding-left: 30px;
+      }
+      .conclusion h3 {
+        color: #a0442a;
+        font-size: 17px;
+        margin: 3px 0 8px;
+      }
+      .conclusion p {
+        font-size: 20px;
+        line-height: 1.4;
+        margin: 0 0 24px;
+      }
+      .conclusion strong {
+        display: block;
+        font-size: 24px;
+        color: #30271f;
+        margin-top: 35px;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        color: #30271f;
+      }
+      .deck {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #fff;
+      }
+      .slide {
+        position: absolute;
+        left: 50%;
+        top: calc(50% - 44px);
+        margin: -360px 0 0 -640px;
+        transform: translateX(calc(var(--offset, 0) * 100vw))
+          scale(var(--scale, 1));
+        transform-origin: center center;
+        transition: transform 0.48s cubic-bezier(0.22, 0.7, 0.2, 1);
+        background: #fff;
+      }
+      .slide[aria-hidden="true"] {
+        pointer-events: none;
+      }
+      .deck-hint {
+        position: fixed;
+        right: 28px;
+        top: 22px;
+        color: #657080;
+        font-size: 16px;
+        z-index: 20;
+      }
+      .deck-count {
+        position: fixed;
+        left: 34px;
+        bottom: 28px;
+        color: #657080;
+        font-size: 17px;
+        z-index: 20;
+      }
+      .deck-controls {
+        position: fixed;
+        right: 32px;
+        bottom: 18px;
+        display: flex;
+        gap: 12px;
+        z-index: 20;
+      }
+      .deck-controls button {
+        width: 58px;
+        height: 58px;
+        border: 1px solid #d2d7df;
+        border-radius: 50%;
+        background: #fff;
+        color: #30271f;
+        font-size: 31px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .deck-controls button:hover {
+        background: #f0f2f5;
+      }
+      .deck-controls button:focus-visible {
+        outline: 3px solid #a0442a;
+        outline-offset: 2px;
+      }
+      @media print {
+        html,
+        body {
+          height: auto;
+          overflow: visible;
+        }
+        .deck {
+          width: auto;
+          height: auto;
+          overflow: visible;
+        }
+        .slide {
+          position: relative;
+          left: auto;
+          top: auto;
+          margin: 0 !important;
+          transform: none !important;
+          transition: none;
+          page-break-after: always;
+          break-after: page;
+        }
+        .deck-hint,
+        .deck-count,
+        .deck-controls {
+          display: none !important;
+        }
+      }
+      .modules {
+        margin-top: 8px;
+      }
+      .modules h3,
+      .scope-outcome h3 {
+        font-size: 19px;
+        color: #a0442a;
+        margin: 0 0 12px;
+      }
+      .module-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 30px;
+      }
+      .module-grid span {
+        font-size: 19px;
+        padding: 10px 4px;
+        border-bottom: 1px solid #ddd4c5;
+      }
+      .module-grid span:before {
+        content: "—  ";
+        color: #a0442a;
+        font-weight: bold;
+      }
+      .scope-outcome {
+        margin-top: 20px;
+        border-left: 3px solid #a0442a;
+        padding: 5px 18px;
+      }
+      .scope-outcome p {
+        font-size: 19px;
+        line-height: 1.4;
+        margin: 0;
+      }
+      .stack-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 19px;
+      }
+      .stack-table th {
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #a0442a;
+        font-size: 15px;
+        padding: 8px 14px;
+        border-bottom: 2px solid #a0442a;
+      }
+      .stack-table td {
+        padding: 8px 14px;
+        border-bottom: 1px solid #ddd4c5;
+      }
+      .stack-table td:first-child {
+        font-weight: bold;
+        width: 34%;
+      }
+      .note {
+        font-size: 16px;
+        line-height: 1.35;
+        margin-top: 16px;
+        color: #65594d;
+      }
+      .note b {
+        color: #a0442a;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck" id="deck">
+      <section class="slide cover">
+        <p class="eyebrow">INDIVIDUAL PROJECT PRESENTATION · REVIEW 1</p>
+        <h1>Restaurant<br />Management<br />System</h1>
+        <p class="sub">Project Proposal and Planning</p>
+        <div class="identity">
+          <b>E. Nithya Lekhana</b><span>Student ID · 25WU0102073</span
+          ><span>B.Tech Computer Science and Engineering</span
+          ><span>Woxsen University</span
+          ><span>Database Management Systems (DBMS)</span>
+        </div>
+        <span class="domain"
+          >PROJECT DOMAIN · FULL-STACK WEB DEVELOPMENT AND DATABASE
+          MANAGEMENT</span
+        >
+      </section>
+      <section class="slide">
+        <p class="eyebrow">01 / OVERVIEW</p>
+        <h2>Introduction</h2>
+        <p class="lead">
+          A database-driven web application designed to organize and simplify
+          daily restaurant operations.
+        </p>
+        <div class="two-col intro">
+          <div>
+            <p>
+              Traditional restaurant management may involve manual reservation
+              records, handwritten orders, separate billing records and
+              time-consuming report preparation.
+            </p>
+            <p>
+              The project provides a centralized system for managing restaurant
+              information through a web interface connected to a relational
+              database.
+            </p>
+          </div>
+          <div class="accent-col">
+            <h3>Integrated operations</h3>
+            <p>
+              Table reservations · Customer records · Menu management · Food
+              orders · Billing · Payments · Management reports
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="slide">
+        <p class="eyebrow">02 / THE NEED</p>
+        <h2>Problem Statement</h2>
+        <p class="lead">Manual restaurant management can lead to:</p>
+        <div class="problem-grid">
+          <article>
+            <b>01 · Reservations</b>
+            <p>Errors in scheduling and table allocation.</p>
+          </article>
+          <article>
+            <b>02 · Customer records</b>
+            <p>Duplicate or inconsistent customer information.</p>
+          </article>
+          <article>
+            <b>03 · Order tracking</b>
+            <p>Difficulty tracking food orders and kitchen progress.</p>
+          </article>
+          <article>
+            <b>04 · Billing</b>
+            <p>Errors in bill calculations, discounts and taxes.</p>
+          </article>
+          <article>
+            <b>05 · Reporting</b>
+            <p>Delays in revenue and performance reports.</p>
+          </article>
+          <article>
+            <b>06 · Data consistency</b>
+            <p>Data duplication and difficulty maintaining accurate records.</p>
+          </article>
+        </div>
+        <p class="solution">
+          <b>Proposed solution</b> — A centralized database-driven web
+          application that improves record management, validates operational
+          data and provides structured access to restaurant information.
+        </p>
+      </section>
+      <section class="slide">
+        <p class="eyebrow">03 / TARGETS</p>
+        <h2>Project Objectives</h2>
+        <div class="objective-grid">
+          <article>
+            <b>01 · Database design</b>
+            <p>Design a relational database for restaurant operations.</p>
+          </article>
+          <article>
+            <b>02 · Reservations</b>
+            <p>Manage customers, tables, dining areas and reservations.</p>
+          </article>
+          <article>
+            <b>03 · Menu and orders</b>
+            <p>Organize menu items and food orders.</p>
+          </article>
+          <article>
+            <b>04 · Kitchen</b>
+            <p>Track kitchen processing and order status.</p>
+          </article>
+          <article>
+            <b>05 · Billing</b>
+            <p>Generate bills with applicable discounts and taxes.</p>
+          </article>
+          <article>
+            <b>06 · Payments</b>
+            <p>Record payments and maintain billing status.</p>
+          </article>
+          <article>
+            <b>07 · Reporting</b>
+            <p>Generate revenue and restaurant performance reports.</p>
+          </article>
+          <article>
+            <b>08 · DBMS concepts</b>
+            <p>
+              Apply normalization, keys, constraints, joins, triggers, views and
+              transactions.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section class="slide">
+        <p class="eyebrow">04 / BOUNDARIES</p>
+        <h2>Project Scope</h2>
+        <div class="modules">
+          <h3>Included modules</h3>
+          <div class="module-grid">
+            <span>Table and dining-area management</span
+            ><span>Customer management</span><span>Reservation management</span
+            ><span>Menu management</span><span>Food-order management</span
+            ><span>Kitchen ticket processing</span
+            ><span>Billing and discount management</span
+            ><span>Payment recording</span><span>Management reports</span>
+          </div>
+        </div>
+        <div class="scope-outcome">
+          <h3>Expected outcome</h3>
+          <p>
+            A web-based application that centralizes restaurant data, supports
+            common workflows and maintains data integrity through database rules
+            and application-level validation.
+          </p>
+        </div>
+      </section>
+      <section class="slide">
+        <p class="eyebrow">05 / IMPLEMENTATION PLAN</p>
+        <h2>Proposed Technology Stack</h2>
+        <table class="stack-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technology</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Frontend</td>
+              <td>HTML5, CSS3, JavaScript</td>
+            </tr>
+            <tr>
+              <td>Backend</td>
+              <td>Python Flask</td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>MySQL 8.0.46</td>
+            </tr>
+            <tr>
+              <td>Database connectivity</td>
+              <td>MySQL Connector/Python</td>
+            </tr>
+            <tr>
+              <td>Configuration</td>
+              <td>Environment variables using python-dotenv</td>
+            </tr>
+            <tr>
+              <td>Development tools</td>
+              <td>VS Code</td>
+            </tr>
+            <tr>
+              <td>Version control</td>
+              <td>Git and GitHub</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="note">
+          <b>Reason for selection</b> — HTML, CSS and JavaScript provide the
+          interface; Flask handles routes and backend logic; MySQL stores
+          related data in structured tables and enforces constraints.
+        </p>
+      </section>
+      <section class="slide">
+        <p class="eyebrow">06 / SYSTEM PLAN</p>
+        <h2>Architecture &amp; Conclusion</h2>
+        <p class="lead">Proposed system architecture</p>
+        <div class="final-layout">
+          <div class="architecture">
+            <div><b>User</b></div>
+            <span>↓</span>
+            <div><b>Frontend</b><small>HTML · CSS · JavaScript</small></div>
+            <span>↓</span>
+            <div>
+              <b>Backend</b><small>Python Flask · Application logic</small>
+            </div>
+            <span>↓</span>
+            <div>
+              <b>Database connector</b><small>MySQL Connector/Python</small>
+            </div>
+            <span>↓</span>
+            <div>
+              <b>MySQL database</b><small>Restaurant management data</small>
+            </div>
+          </div>
+          <div class="conclusion">
+            <h3>Review 1 conclusion</h3>
+            <p>
+              Problem and requirements identified. Objectives and scope defined.
+              Technology stack selected. Modular, database-driven architecture
+              planned.
+            </p>
+            <h3>Next step</h3>
+            <p>
+              Develop the database schema, ER diagram, application interface and
+              backend functionality.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="deck-hint">← → navigate · F full screen · P print</div>
+    <div class="deck-count" id="count">01 / 07</div>
+    <div class="deck-controls">
+      <button id="prev" aria-label="Previous slide">‹</button
+      ><button id="next" aria-label="Next slide">›</button>
+    </div>
+    <script>
+      const slides = [...document.querySelectorAll(".slide")];
+      let current = 0;
+      function render() {
+        document.documentElement.style.setProperty(
+          "--scale",
+          Math.min(innerWidth / 1280, (innerHeight - 90) / 720),
+        );
+        slides.forEach((s, i) => {
+          s.style.setProperty("--offset", i - current);
+          s.setAttribute("aria-hidden", i === current ? "false" : "true");
+        });
+        document.getElementById("count").textContent =
+          String(current + 1).padStart(2, "0") +
+          " / " +
+          String(slides.length).padStart(2, "0");
+      }
+      function move(n) {
+        current = Math.max(0, Math.min(slides.length - 1, current + n));
+        render();
+      }
+      document.getElementById("prev").onclick = () => move(-1);
+      document.getElementById("next").onclick = () => move(1);
+      window.addEventListener("resize", render);
+      window.addEventListener("keydown", (e) => {
+        if (["ArrowRight", "PageDown", " "].includes(e.key)) {
+          e.preventDefault();
+          move(1);
+        }
+        if (["ArrowLeft", "PageUp"].includes(e.key)) {
+          e.preventDefault();
+          move(-1);
+        }
+        if (e.key === "Home") {
+          current = 0;
+          render();
+        }
+        if (e.key === "End") {
+          current = slides.length - 1;
+          render();
+        }
+        if (e.key.toLowerCase() === "f") {
+          document.fullscreenElement
+            ? document.exitFullscreen()
+            : document.documentElement.requestFullscreen();
+        }
+        if (e.key.toLowerCase() === "p") {
+          window.print();
+        }
+      });
+      let startX = null;
+      document.addEventListener(
+        "touchstart",
+        (e) => (startX = e.touches[0].clientX),
+        { passive: true },
+      );
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          if (
+            startX !== null &&
+            Math.abs(e.changedTouches[0].clientX - startX) > 50
+          )
+            move(e.changedTouches[0].clientX < startX ? 1 : -1);
+          startX = null;
+        },
+        { passive: true },
+      );
+      render();
+    </script>
+  </body>
+</html>

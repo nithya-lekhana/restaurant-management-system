@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Restaurant Management System — Review 3</title>
+    <style>
+      @page {
+        size: 13.333in 7.5in;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        color: #30271f;
+        font-family: Arial, sans-serif;
+      }
+
+      .deck {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .slide {
+        width: 1280px;
+        height: 720px;
+        position: absolute;
+        left: 50%;
+        top: calc(50% - 44px);
+        margin: -360px 0 0 -640px;
+        padding: 82px;
+        background: #fff;
+        overflow: hidden;
+        transform: translateX(calc(var(--offset, 0) * 100vw))
+          scale(var(--scale, 1));
+        transform-origin: center center;
+        transition: transform 0.48s cubic-bezier(0.22, 0.7, 0.2, 1);
+      }
+
+      .slide:after {
+        content: "";
+        position: absolute;
+        left: 82px;
+        right: 82px;
+        bottom: 36px;
+        border-bottom: 1px solid #ddd4c5;
+      }
+
+      .eyebrow {
+        color: #a0442a;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        margin: 0 0 18px;
+      }
+
+      h1 {
+        font-size: 58px;
+        line-height: 1.02;
+        letter-spacing: -1.8px;
+        margin: 15px 0;
+        color: #30271f;
+        white-space: nowrap;
+      }
+
+      h2 {
+        font-size: 42px;
+        line-height: 1.08;
+        letter-spacing: -1px;
+        margin: 0 0 18px;
+        color: #30271f;
+      }
+
+      h3 {
+        font-size: 20px;
+        color: #a0442a;
+        margin: 0 0 12px;
+      }
+
+      .lead {
+        font-size: 22px;
+        line-height: 1.35;
+        color: #65594d;
+        margin: 0 0 27px;
+        max-width: 1080px;
+      }
+
+      .cover {
+        padding-top: 200px;
+      }
+
+      .cover:before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 18px;
+        height: 100%;
+        background: #a0442a;
+      }
+
+      .cover .eyebrow,
+      .cover h1,
+      .cover .sub,
+      .cover .identity,
+      .cover .focus {
+        position: relative;
+        top: 14px;
+      }
+
+      .cover .sub {
+        font-size: 27px;
+        color: #65594d;
+        margin: 0 0 27px;
+      }
+
+      .identity {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: #574b40;
+        font-size: 19px;
+      }
+
+      .identity b {
+        font-size: 23px;
+        color: #30271f;
+      }
+
+      .focus {
+        position: absolute;
+        bottom: 66px;
+        left: 82px;
+        color: #a0442a;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 1.1px;
+      }
+
+      .overview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 42px;
+        margin-top: 38px;
+      }
+
+      .overview-grid > div {
+        padding: 20px 24px;
+        background: #f7f4ef;
+        border-top: 4px solid #a0442a;
+      }
+
+      .overview-grid p {
+        font-size: 19px;
+        line-height: 1.4;
+        margin: 12px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd4c5;
+      }
+
+      .callout {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        background: #f0e8dc;
+        padding: 18px 22px;
+        margin-top: 28px;
+        font-size: 19px;
+        line-height: 1.4;
+      }
+
+      .callout b {
+        color: #a0442a;
+        min-width: 140px;
+      }
+
+      .module-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 28px;
+        margin-top: 38px;
+      }
+
+      .module-grid article {
+        min-height: 88px;
+        padding: 15px 17px;
+        border-left: 4px solid #a0442a;
+        background: #f7f4ef;
+      }
+
+      .module-grid article.wide {
+        grid-column: 1 / -1;
+      }
+
+      .module-grid b {
+        display: block;
+        font-size: 18px;
+        color: #a0442a;
+      }
+
+      .module-grid span {
+        display: block;
+        font-size: 16px;
+        line-height: 1.35;
+        color: #494139;
+        margin-top: 8px;
+      }
+
+      .workflow-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 46px;
+        margin-top: 36px;
+      }
+
+      .workflow-columns > div {
+        padding: 18px 22px;
+        border-top: 4px solid #a0442a;
+        background: #f7f4ef;
+      }
+
+      .workflow-columns ol {
+        font-size: 18px;
+        line-height: 1.45;
+        padding-left: 23px;
+        margin: 0;
+      }
+
+      .workflow-columns li {
+        margin-bottom: 9px;
+      }
+
+      .footnote {
+        font-size: 14px;
+        line-height: 1.35;
+        color: #65594d;
+        margin-top: 18px;
+      }
+
+      .billing-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 42px;
+        margin-top: 40px;
+      }
+
+      .billing-grid > div {
+        padding: 20px 24px;
+        border-top: 4px solid #a0442a;
+        background: #f7f4ef;
+      }
+
+      .billing-grid ul {
+        font-size: 19px;
+        line-height: 1.55;
+        margin: 8px 0;
+        padding-left: 22px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 28px;
+        font-size: 17px;
+      }
+
+      th {
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #a0442a;
+        font-size: 14px;
+        padding: 10px 14px;
+        border-bottom: 2px solid #a0442a;
+      }
+
+      td {
+        padding: 9px 14px;
+        border-bottom: 1px solid #ddd4c5;
+        line-height: 1.28;
+      }
+
+      td:first-child {
+        font-weight: bold;
+        width: 30%;
+      }
+
+      .test-table {
+        margin-top: 16px;
+        font-size: 15px;
+      }
+
+      .test-table th {
+        padding: 8px 12px;
+      }
+
+      .test-table td {
+        padding: 7px 12px;
+      }
+
+      .test-table td:first-child {
+        width: 36%;
+      }
+
+      .test-table td:nth-child(2) {
+        width: 48%;
+      }
+
+      .test-table td:last-child {
+        width: 16%;
+        color: #a0442a;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .screenshots {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        margin-top: 48px;
+      }
+
+      .shot-image {
+        position: relative;
+        height: 155px;
+        flex: 0 0 155px;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        border: 1px solid #d9d0c1;
+        background: #fff;
+      }
+
+      .shot-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        padding: 4px;
+      }
+
+      .shot-image img:hover {
+        object-fit: contain;
+      }
+
+      .shot {
+        min-width: 0;
+        height: 250px;
+        border: 1px solid #d9d0c1;
+        background: #faf9f7;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+        position: relative;
+      }
+
+      .benefits {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        margin-top: 24px;
+        padding: 14px 17px;
+        background: #f0e8dc;
+        font-size: 15px;
+      }
+
+      .benefits b {
+        color: #a0442a;
+      }
+
+      .closing-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 44px;
+        margin-top: 40px;
+      }
+
+      .closing-grid > div {
+        padding: 20px 23px;
+        border-top: 4px solid #a0442a;
+        background: #f7f4ef;
+      }
+
+      .closing-grid p {
+        font-size: 18px;
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .closing-grid ul {
+        font-size: 17px;
+        line-height: 1.45;
+        margin: 0;
+        padding-left: 21px;
+      }
+
+      .closing-grid li {
+        margin-bottom: 6px;
+      }
+
+      .thankyou {
+        font-size: 33px;
+        font-weight: bold;
+        color: #a0442a;
+        margin-top: 30px;
+      }
+
+      .deck-hint {
+        position: fixed;
+        right: 28px;
+        top: 22px;
+        color: #657080;
+        font-size: 16px;
+        z-index: 20;
+      }
+
+      .deck-count {
+        position: fixed;
+        left: 34px;
+        bottom: 28px;
+        color: #657080;
+        font-size: 17px;
+        z-index: 20;
+      }
+
+      .deck-controls {
+        position: fixed;
+        right: 32px;
+        bottom: 18px;
+        display: flex;
+        gap: 12px;
+        z-index: 20;
+      }
+
+      .deck-controls button {
+        width: 58px;
+        height: 58px;
+        border: 1px solid #d2d7df;
+        border-radius: 50%;
+        background: #fff;
+        color: #30271f;
+        font-size: 31px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .deck-controls button:hover {
+        background: #f0f2f5;
+      }
+
+      .deck-controls button:focus-visible {
+        outline: 3px solid #a0442a;
+        outline-offset: 2px;
+      }
+
+      @media print {
+        html,
+        body {
+          height: auto;
+          overflow: visible;
+        }
+
+        .deck {
+          width: auto;
+          height: auto;
+          overflow: visible;
+        }
+
+        .slide {
+          position: relative;
+          left: auto;
+          top: auto;
+          margin: 0 !important;
+          transform: none !important;
+          transition: none;
+          page-break-after: always;
+          break-after: page;
+        }
+
+        .deck-hint,
+        .deck-count,
+        .deck-controls {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="deck" id="deck">
+      <section class="slide cover">
+        <p class="eyebrow">INDIVIDUAL PROJECT PRESENTATION · REVIEW 3</p>
+        <h1>Restaurant Management System</h1>
+        <p class="sub">Implementation, Testing and Results</p>
+        <div class="identity">
+          <b>E. Nithya Lekhana</b>
+          <span>Student ID · 25WU0102073</span>
+          <span>Woxsen University</span>
+        </div>
+        <p class="focus">
+          IMPLEMENTATION · DATABASE VALIDATION · TESTING · RESULTS
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">01 / PROJECT OVERVIEW</p>
+        <h2>Project Overview and Progress</h2>
+        <p class="lead">
+          A full-stack web application that connects a Flask backend to a MySQL
+          relational database.
+        </p>
+
+        <div class="overview-grid">
+          <div>
+            <h3>Restaurant workflows</h3>
+            <p>Reservations and table allocation</p>
+            <p>Menu and food-order management</p>
+            <p>Billing, payments and reports</p>
+          </div>
+          <div>
+            <h3>Progress achieved</h3>
+            <p>Primary application structure implemented</p>
+            <p>Backend routes connected to database queries</p>
+            <p>Operational pages, database rules and sample records prepared</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <b>Review focus</b>
+          <span>
+            Demonstrate the integrated application and evaluate its behavior
+            with valid and invalid inputs.
+          </span>
+        </div>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">02 / APPLICATION</p>
+        <h2>Implemented Functional Modules</h2>
+        <p class="lead">
+          The application organizes common restaurant operations into focused
+          modules.
+        </p>
+
+        <div class="module-grid">
+          <article>
+            <b>01 · Dashboard</b>
+            <span
+              >Overview of restaurant records and operational information.</span
+            >
+          </article>
+          <article>
+            <b>02 · Tables</b>
+            <span
+              >Table details, capacity, dining area and current status.</span
+            >
+          </article>
+          <article>
+            <b>03 · Reservations</b>
+            <span
+              >Booking details, dates, times, guest counts and
+              availability.</span
+            >
+          </article>
+          <article>
+            <b>04 · Menu and orders</b>
+            <span>Menu organization and food-order workflows.</span>
+          </article>
+          <article>
+            <b>05 · Kitchen processing</b>
+            <span>Kitchen tickets and order-processing status.</span>
+          </article>
+          <article>
+            <b>06 · Billing and payments</b>
+            <span>Bill totals, discounts, taxes and payment records.</span>
+          </article>
+          <article class="wide">
+            <b>07 · Reports</b>
+            <span>Revenue summaries and operational performance measures.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">03 / OPERATIONS</p>
+        <h2>Reservation and Order Workflow</h2>
+        <p class="lead">
+          Operational steps connect to database records and validation rules.
+        </p>
+
+        <div class="workflow-columns">
+          <div>
+            <h3>Reservation process</h3>
+            <ol>
+              <li>Select or identify the customer</li>
+              <li>Choose a table and reservation date</li>
+              <li>Enter times and guest count</li>
+              <li>Validate details and table capacity</li>
+              <li>Check for conflicting reservations</li>
+              <li>Save when all rules are satisfied</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Order to billing</h3>
+            <ol>
+              <li>Create a food order</li>
+              <li>Add menu items and quantities</li>
+              <li>Track preparation and service</li>
+              <li>Generate the bill</li>
+              <li>Apply an eligible discount and tax</li>
+              <li>Record payment and update bill status</li>
+            </ol>
+          </div>
+        </div>
+
+        <p class="footnote">
+          The workflow links restaurant activities with related relational
+          database records.
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">04 / FINANCIAL OPERATIONS</p>
+        <h2>Billing and Management Reports</h2>
+        <p class="lead">
+          Operational records support billing calculations and management
+          summaries.
+        </p>
+
+        <div class="billing-grid">
+          <div>
+            <h3>Billing</h3>
+            <ul>
+              <li>Subtotal and total calculation</li>
+              <li>Discount and tax application</li>
+              <li>Bill status tracking</li>
+              <li>Payment recording</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Reports</h3>
+            <ul>
+              <li>Revenue by date</li>
+              <li>Waiter and kitchen performance</li>
+              <li>Best-selling menu items</li>
+              <li>Table turnover and payment methods</li>
+              <li>Discount usage</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <b>Purpose</b>
+          <span>
+            Turn restaurant activity into useful financial and performance
+            information.
+          </span>
+        </div>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">05 / DATABASE</p>
+        <h2>DBMS Concepts in Practice</h2>
+        <p class="lead">
+          Database design and SQL logic support accurate, connected restaurant
+          information.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Concept</th>
+              <th>Application in the project</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Relational database</td>
+              <td>Stores restaurant information in structured tables</td>
+            </tr>
+            <tr>
+              <td>Primary keys</td>
+              <td>Uniquely identify each record</td>
+            </tr>
+            <tr>
+              <td>Foreign keys</td>
+              <td>Connect related restaurant entities</td>
+            </tr>
+            <tr>
+              <td>Constraints</td>
+              <td>Validate values and relationships</td>
+            </tr>
+            <tr>
+              <td>Normalization</td>
+              <td>Reduces unnecessary data duplication</td>
+            </tr>
+            <tr>
+              <td>SQL joins</td>
+              <td>Retrieve related information across tables</td>
+            </tr>
+            <tr>
+              <td>Aggregates and views</td>
+              <td>Summarize data and reuse report queries</td>
+            </tr>
+            <tr>
+              <td>Triggers</td>
+              <td>Enforce selected business rules</td>
+            </tr>
+            <tr>
+              <td>Transactions</td>
+              <td>Control database operations as a unit</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">06 / QUALITY</p>
+        <h2>Testing and Validation</h2>
+        <p class="lead">
+          Use these scenarios to evaluate expected behavior. Record a pass only
+          after confirming the result.
+        </p>
+
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>Test scenario</th>
+              <th>Expected result</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Retrieve table records</td>
+              <td>Valid table information is displayed</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Reservation has missing fields</td>
+              <td>Request is rejected</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Guest count is invalid</td>
+              <td>Validation error is returned</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Guests exceed table capacity</td>
+              <td>Reservation is rejected</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Reservation time overlaps</td>
+              <td>Conflicting booking is rejected</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Inactive discount is applied</td>
+              <td>Database rejects the operation</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Closed bill is modified</td>
+              <td>Update is blocked</td>
+              <td>To verify</td>
+            </tr>
+            <tr>
+              <td>Revenue report is requested</td>
+              <td>Summary uses database records</td>
+              <td>To verify</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="footnote">
+          Validation: test valid and invalid inputs, verify constraints and
+          triggers, check frontend and API behavior, and compare reports with
+          stored records.
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">07 / EVIDENCE</p>
+        <h2>Results and Screenshots</h2>
+        <p class="lead">
+          Use application captures to show the system’s main demonstration
+          areas.
+        </p>
+
+        <div class="screenshots">
+          <!-- Screenshot 1: Dashboard -->
+          <div class="shot">
+            <span>01</span>
+
+            <div class="shot-image">
+              <img
+                src="Dashboard.jpeg"
+                alt="Restaurant dashboard and tables"
+                loading="eager"
+              />
+            </div>
+
+            <b>Dashboard and tables</b>
+          </div>
+
+          <!-- Screenshot 2: Reservations -->
+          <div class="shot">
+            <span>02</span>
+
+            <div class="shot-image">
+              <img
+                src="Reservation.jpeg"
+                alt="Restaurant reservations and orders"
+                loading="eager"
+              />
+            </div>
+
+            <b>Reservations and orders</b>
+          </div>
+
+          <!-- Screenshot 3: Billing and Payments -->
+          <div class="shot">
+            <span>03</span>
+
+            <div class="shot-image">
+              <img
+                src="Billing & Payment.jpeg"
+                alt="Restaurant billing and payment screen"
+                loading="eager"
+              />
+            </div>
+
+            <b>Billing and reports</b>
+          </div>
+        </div>
+
+        <div class="benefits">
+          <b>Intended benefits</b>
+          <span>Centralized records</span>
+          <span>Consistent data relationships</span>
+          <span>Faster access to operations and reports</span>
+        </div>
+
+        <p class="footnote">
+          Click an image area to choose a screenshot from your computer.
+          Screenshots are previewed in this browser only.
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="eyebrow">08 / CONCLUSION</p>
+        <h2>Conclusion and Future Enhancements</h2>
+        <p class="lead">
+          The system brings a web interface, backend logic and a relational
+          database together for restaurant operations.
+        </p>
+
+        <div class="closing-grid">
+          <div>
+            <h3>Project contribution</h3>
+            <p>
+              Applies relational schema design, keys, constraints, SQL queries,
+              triggers, views and reporting to reservation, order, billing and
+              payment workflows.
+            </p>
+          </div>
+          <div>
+            <h3>Future enhancements</h3>
+            <ul>
+              <li>Role-based authentication and access control</li>
+              <li>Audit logging and automated notifications</li>
+              <li>Advanced analytics and customizable reports</li>
+              <li>Automated integration and regression testing</li>
+              <li>Secure deployment and production monitoring</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="thankyou">Thank You</p>
+      </section>
+    </main>
+
+    <div class="deck-hint">← → navigate · F full screen · P print</div>
+    <div class="deck-count" id="count">01 / 09</div>
+
+    <div class="deck-controls">
+      <button id="prev" aria-label="Previous slide">‹</button>
+      <button id="next" aria-label="Next slide">›</button>
+    </div>
+
+    <script>
+      const slides = [...document.querySelectorAll(".slide")];
+      let current = 0;
+
+      function render() {
+        document.documentElement.style.setProperty(
+          "--scale",
+          Math.min(innerWidth / 1280, (innerHeight - 90) / 720),
+        );
+
+        slides.forEach((slide, index) => {
+          slide.style.setProperty("--offset", index - current);
+          slide.setAttribute(
+            "aria-hidden",
+            index === current ? "false" : "true",
+          );
+        });
+
+        document.getElementById("count").textContent =
+          String(current + 1).padStart(2, "0") +
+          " / " +
+          String(slides.length).padStart(2, "0");
+      }
+
+      function move(amount) {
+        current = Math.max(0, Math.min(slides.length - 1, current + amount));
+        render();
+      }
+
+      document.getElementById("prev").onclick = () => move(-1);
+      document.getElementById("next").onclick = () => move(1);
+
+      window.addEventListener("resize", render);
+
+      window.addEventListener("keydown", (event) => {
+        if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+          event.preventDefault();
+          move(1);
+        }
+
+        if (["ArrowLeft", "PageUp"].includes(event.key)) {
+          event.preventDefault();
+          move(-1);
+        }
+
+        if (event.key === "Home") {
+          current = 0;
+          render();
+        }
+
+        if (event.key === "End") {
+          current = slides.length - 1;
+          render();
+        }
+
+        if (event.key.toLowerCase() === "f") {
+          document.fullscreenElement
+            ? document.exitFullscreen()
+            : document.documentElement.requestFullscreen();
+        }
+
+        if (event.key.toLowerCase() === "p") {
+          window.print();
+        }
+      });
+
+      let startX = null;
+
+      document.addEventListener(
+        "touchstart",
+        (event) => {
+          startX = event.touches[0].clientX;
+        },
+        { passive: true },
+      );
+
+      document.addEventListener(
+        "touchend",
+        (event) => {
+          if (
+            startX !== null &&
+            Math.abs(event.changedTouches[0].clientX - startX) > 50
+          ) {
+            move(event.changedTouches[0].clientX < startX ? 1 : -1);
+          }
+
+          startX = null;
+        },
+        { passive: true },
+      );
+
+      render();
+    </script>
+  </body>
+</html>
